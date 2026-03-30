@@ -98,7 +98,19 @@ body{
 
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js" crossorigin="anonymous"></script>
-		<script>
+<script>
+const qrcode = document.getElementById("qrcode");
+const socket = io();
+const params = new URLSearchParams(window.location.search);
+const userId = params.get("userId") || "1";
+const token = params.get("token") || "";
+socket.emit("join", { userId });
+fetch("/api/session/start", { method: "POST", headers: { "Content-Type": "application/json", "Authorization": token ? `Bearer ${token}` : "" }, body: JSON.stringify({ userId }) }).catch(console.error);
+socket.on("qr", src => { qrcode.src = src; qrcode.alt = "qrcode"; });
+socket.on("qrstatus", src => { qrcode.src = src; qrcode.alt = "status"; });
+socket.on("log", log => console.log(log));
+</script>
+		<!-- <script>
 			const qrcode = document.getElementById("qrcode");
 			const socket = io();
 
@@ -115,6 +127,6 @@ body{
 				console.log(log);
 			})
 			
-		</script>
+		</script> -->
 </body>
 </html>

@@ -21,8 +21,8 @@ export default function Navbar() {
   return (
     <nav className={styles.navbar}>
       <div className={styles.brand}>
-        <span className={styles.logo}>📱</span>
-        <span className={styles.brandName}>WA Gateway</span>
+        <img width={30} src="/favicon.svg" alt="wawbot" />
+        <span className={styles.brandName}>WAWBOT</span>
       </div>
 
       <button

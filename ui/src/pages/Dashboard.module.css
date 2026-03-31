@@ -17,6 +17,39 @@
   grid-column: 1;
 }
 
+.tokenWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.copyBtn {
+  border: 1px solid #d0d7de;
+  background: #fff;
+  color: #24292f;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.copyBtn:hover:not(:disabled) {
+  background: #f6f8fa;
+  border-color: #afb8c1;
+}
+
+.copyBtn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.copyBtn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;

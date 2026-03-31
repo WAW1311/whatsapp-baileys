@@ -44,11 +44,11 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
 
-    const socket = io('/', { transports: ['websocket', 'polling'] })
+    const socket = io('/', { auth: { token }, transports: ['websocket', 'polling'] })
     socketRef.current = socket
 
     socket.on('connect', () => {
-      socket.emit('join', { userId: user.id || user._id })
+      socket.emit('join')
     })
 
     socket.on('qr', (dataUrl) => {
@@ -69,12 +69,12 @@ export default function Dashboard() {
     return () => {
       socket.disconnect()
     }
-  }, [user])
+  }, [user, token])
 
   const startSession = async () => {
     setSessionLoading(true)
     try {
-      const res = await api.post('/api/session/start', { userId: user.id || user._id })
+      const res = await api.post('/api/session/start', {})
       if (res.data.status) {
         add('Session started – scan the QR code', 'success')
       } else {
@@ -90,7 +90,7 @@ export default function Dashboard() {
   const logoutSession = async () => {
     setLogoutLoading(true)
     try {
-      const res = await api.post('/api/session/logout', { userId: user.id || user._id })
+      const res = await api.post('/api/session/logout', {})
       if (res.data.status) {
         add('WhatsApp session logged out', 'success')
         setQrImage(null)

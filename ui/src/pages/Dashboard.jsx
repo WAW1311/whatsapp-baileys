@@ -126,10 +126,10 @@ export default function Dashboard() {
             <span className={styles.infoLabel}>Email</span>
             <span>{user?.email || '—'}</span>
           </div>
-          <div className={styles.infoRow}>
+          {/* <div className={styles.infoRow}>
             <span className={styles.infoLabel}>User ID</span>
             <span className={styles.mono}>{user?.id || user?._id || '—'}</span>
-          </div>
+          </div> */}
           <div className={styles.infoRow}>
             <span className={styles.infoLabel}>API Key</span>
             <div className={styles.tokenWrap}>

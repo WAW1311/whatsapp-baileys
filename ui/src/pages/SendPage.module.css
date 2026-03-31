@@ -1,0 +1,15 @@
+.formCard {
+  max-width: 600px;
+}
+
+textarea.formControl,
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.fileName {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+}

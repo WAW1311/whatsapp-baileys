@@ -3,16 +3,17 @@ const {
   DisconnectReason,
   fetchLatestBaileysVersion,
   isJidBroadcast,
-  makeInMemoryStore,
-  useMultiFileAuthState
+  // makeInMemoryStore,
+  useMultiFileAuthState,
 } = require("@whiskeysockets/baileys");
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const qrcode = require("qrcode");
 const fs = require("fs");
 const path = require("path");
+const { wrapSocket } = require('baileys-antiban');
 
-const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
+// const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 const sessions = new Map();
 
 function getSession(userId) {
@@ -45,16 +46,16 @@ async function startSession(userId, io) {
   const { state, saveCreds } = await useMultiFileAuthState(authPath);
   const { version } = await fetchLatestBaileysVersion();
 
-  const sock = makeWASocket({
+  const sock = wrapSocket(makeWASocket({
     printQRInTerminal: false,
     auth: state,
     logger: pino({ level: "silent" }),
     version,
     shouldIgnoreJid: jid => isJidBroadcast(jid),
-  });
+  }));
 
   sessions.set(userId, { sock, qr: null });
-  store.bind(sock.ev);
+  // store.bind(sock.ev);
   sock.ev.on("creds.update", saveCreds);
 
   sock.ev.on("connection.update", async (update) => {

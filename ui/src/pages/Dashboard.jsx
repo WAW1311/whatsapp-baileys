@@ -15,7 +15,7 @@ function useToast() {
 }
 
 export default function Dashboard() {
-  const { user } = useAuth()
+  const { user, token } = useAuth()
   const { toasts, add } = useToast()
 
   const [qrImage, setQrImage] = useState(null)
@@ -24,6 +24,22 @@ export default function Dashboard() {
   const [sessionLoading, setSessionLoading] = useState(false)
   const [logoutLoading, setLogoutLoading] = useState(false)
   const socketRef = useRef(null)
+
+  const maskToken = (value) => {
+    if (!value) return '—'
+    if (value.length <= 10) return `${value.slice(0, 2)}***${value.slice(-2)}`
+    return `${value.slice(0, 6)}...${value.slice(-4)}`
+  }
+
+  const copyApiKey = async () => {
+    if (!token) return
+    try {
+      await navigator.clipboard.writeText(token)
+      add('API Key berhasil disalin', 'success')
+    } catch (err) {
+      add('Gagal menyalin API Key', 'error')
+    }
+  }
 
   useEffect(() => {
     if (!user) return
@@ -100,7 +116,6 @@ export default function Dashboard() {
       <h1 className="page-title">Dashboard</h1>
 
       <div className={styles.grid}>
-        {/* User Info */}
         <div className={`card ${styles.userCard}`}>
           <h2 className={styles.sectionTitle}>👤 Account</h2>
           <div className={styles.infoRow}>
@@ -115,9 +130,24 @@ export default function Dashboard() {
             <span className={styles.infoLabel}>User ID</span>
             <span className={styles.mono}>{user?.id || user?._id || '—'}</span>
           </div>
+          <div className={styles.infoRow}>
+            <span className={styles.infoLabel}>API Key</span>
+            <div className={styles.tokenWrap}>
+              <span className={styles.token}>{maskToken(token)}</span>
+              <button
+                type="button"
+                className={styles.copyBtn}
+                onClick={copyApiKey}
+                disabled={!token}
+                aria-label="Copy API Key"
+                title="Copy API Key"
+              >
+                📋 Copy
+              </button>
+            </div>
+          </div>
         </div>
 
-        {/* WhatsApp Session */}
         <div className={`card ${styles.sessionCard}`}>
           <h2 className={styles.sectionTitle}>📱 WhatsApp Session</h2>
 
@@ -140,24 +170,15 @@ export default function Dashboard() {
           </div>
 
           <div className={styles.sessionActions}>
-            <button
-              className="btn btn-primary"
-              onClick={startSession}
-              disabled={sessionLoading}
-            >
+            <button className="btn btn-primary" onClick={startSession} disabled={sessionLoading}>
               {sessionLoading ? <span className="spinner" /> : '▶ Start Session'}
             </button>
-            <button
-              className="btn btn-danger"
-              onClick={logoutSession}
-              disabled={logoutLoading}
-            >
+            <button className="btn btn-danger" onClick={logoutSession} disabled={logoutLoading}>
               {logoutLoading ? <span className="spinner" /> : '⏏ Logout Session'}
             </button>
           </div>
         </div>
 
-        {/* Logs */}
         <div className={`card ${styles.logCard}`}>
           <h2 className={styles.sectionTitle}>📋 Realtime Logs</h2>
           <div className={styles.logBox}>

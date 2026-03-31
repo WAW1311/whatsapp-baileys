@@ -32,8 +32,8 @@ export default function Login() {
     <div className={styles.authWrapper}>
       <div className={`card ${styles.authCard}`}>
         <div className={styles.authHeader}>
-          <span className={styles.authIcon}>📱</span>
-          <h1 className={styles.authTitle}>WA Gateway</h1>
+          <img src="/favicon.svg" alt="wawbot" />
+          <h1 className={styles.authTitle}>WAWBOT</h1>
           <p className={styles.authSubtitle}>Sign in to your account</p>
         </div>
 

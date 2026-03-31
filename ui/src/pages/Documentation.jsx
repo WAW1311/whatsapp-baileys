@@ -2,138 +2,6 @@ import styles from './Documentation.module.css'
 
 const endpoints = [
   {
-    section: 'Auth Endpoints',
-    items: [
-      {
-        id: 1,
-        title: 'Register',
-        method: 'POST',
-        url: '/api/auth/register',
-        auth: false,
-        contentType: 'application/json',
-        body: `{
-  "name": "Admin",
-  "email": "admin@mail.com",
-  "password": "12345678"
-}`,
-        success: `{
-  "status": true,
-  "response": {
-    "user": {
-      "id": 1,
-      "name": "Admin",
-      "email": "admin@mail.com"
-    },
-    "token": "JWT_TOKEN"
-  }
-}`,
-      },
-      {
-        id: 2,
-        title: 'Login',
-        method: 'POST',
-        url: '/api/auth/login',
-        auth: false,
-        contentType: 'application/json',
-        body: `{
-  "email": "admin@mail.com",
-  "password": "12345678"
-}`,
-        success: `{
-  "status": true,
-  "response": {
-    "user": {
-      "id": 1,
-      "name": "Admin",
-      "email": "admin@mail.com"
-    },
-    "token": "JWT_TOKEN"
-  }
-}`,
-      },
-      {
-        id: 3,
-        title: 'Me',
-        method: 'GET',
-        url: '/api/auth/me',
-        auth: true,
-        success: `{
-  "status": true,
-  "response": {
-    "id": 1,
-    "name": "Admin",
-    "email": "admin@mail.com",
-    "iat": 1710000000,
-    "exp": 1710600000
-  }
-}`,
-      },
-    ],
-  },
-  {
-    section: 'Session Endpoints',
-    items: [
-      {
-        id: 4,
-        title: 'Start Session',
-        method: 'POST',
-        url: '/api/session/start',
-        auth: true,
-        contentType: 'application/json',
-        body: `{
-  "userId": 1
-}`,
-        bodyNote: '(opsional)',
-        success: `{
-  "status": true,
-  "response": {
-    "userId": "1"
-  }
-}`,
-      },
-      {
-        id: 5,
-        title: 'Get QR',
-        method: 'GET',
-        url: '/api/session/qr',
-        auth: true,
-        query: 'userId (opsional) — contoh: /api/session/qr?userId=1',
-        success: `{
-  "status": true,
-  "response": {
-    "userId": "1",
-    "qr": "data:image/png;base64,iVBORw0KGgoAAA..."
-  }
-}`,
-        notes: ['Jika QR belum tersedia / session sudah terhubung, status akan false.'],
-      },
-      {
-        id: 6,
-        title: 'Logout Session',
-        method: 'POST',
-        url: '/api/session/logout',
-        auth: true,
-        contentType: 'application/json',
-        body: `{
-  "userId": 1
-}`,
-        bodyNote: '(opsional)',
-        success: `{
-  "status": true,
-  "response": {
-    "userId": "1",
-    "message": "Session logout & auth folder deleted"
-  }
-}`,
-        notes: [
-          'Logout dari WhatsApp device (jika socket aktif).',
-          'Menghapus folder auth: baileys_auth_info/<userId>.',
-          'Setelah logout, wajib scan QR ulang.',
-        ],
-      },
-    ],
-  },
-  {
     section: 'Message Endpoints',
     items: [
       {
@@ -220,37 +88,7 @@ const endpoints = [
         ],
       },
     ],
-  },
-  {
-    section: 'Utility Endpoints',
-    items: [
-      {
-        id: 10,
-        title: 'Health Check',
-        method: 'GET',
-        url: '/health',
-        auth: false,
-        success: `{
-  "status": true,
-  "response": "OK"
-}`,
-      },
-      {
-        id: 11,
-        title: 'Web Scan Page',
-        method: 'GET',
-        url: '/scan',
-        auth: false,
-      },
-      {
-        id: 12,
-        title: 'Home Page',
-        method: 'GET',
-        url: '/',
-        auth: false,
-      },
-    ],
-  },
+  }
 ]
 
 const METHOD_COLOR = {
@@ -366,7 +204,7 @@ export default function Documentation() {
         <h2 className={styles.sectionTitle}>🔒 Authentication</h2>
         <p>Semua endpoint yang butuh auth wajib header:</p>
         <div className={styles.codeBlock}>
-          <pre><code>Authorization: Bearer &lt;JWT_TOKEN&gt;</code></pre>
+          <pre><code>Authorization: Bearer &lt;API_KEY&gt;</code></pre>
         </div>
       </div>
 
@@ -379,56 +217,6 @@ export default function Documentation() {
           ))}
         </div>
       ))}
-
-      {/* Socket.IO */}
-      <div className={`card ${styles.socketCard}`}>
-        <h2 className={styles.sectionTitle}>⚡ Socket.IO Realtime</h2>
-        <p className={styles.socketDesc}>Server menggunakan Socket.IO untuk event QR/status.</p>
-        <div className={styles.socketGrid}>
-          <div>
-            <div className={styles.codeLabel}>Join Room</div>
-            <div className={styles.meta}><span className={styles.metaLabel}>Event:</span> <code>join</code></div>
-            <div className={styles.codeBlock}>
-              <pre><code>{`{
-  "userId": 1
-}`}</code></pre>
-            </div>
-            <div className={styles.meta}><span className={styles.metaLabel}>Room:</span> <code>user:&lt;userId&gt;</code></div>
-          </div>
-          <div>
-            <div className={styles.codeLabel}>Event dari Server</div>
-            <ul className={styles.eventList}>
-              <li><code>qr</code> — Data URL QR</li>
-              <li><code>qrstatus</code> — status icon</li>
-              <li><code>log</code> — log text</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Recommended flow */}
-      <div className={`card ${styles.flowCard}`}>
-        <h2 className={styles.sectionTitle}>🔄 Alur Disarankan</h2>
-        <ol className={styles.flowList}>
-          <li>Register/Login → dapatkan JWT</li>
-          <li><code>POST /api/session/start</code></li>
-          <li><code>GET /api/session/qr</code> sampai QR muncul</li>
-          <li>Scan QR di WhatsApp</li>
-          <li>Kirim pesan: personal <code>POST /api/send-message</code> / grup <code>POST /api/send-group-message</code></li>
-          <li>Ambil daftar grup: <code>GET /api/groups</code></li>
-          <li>Logout total (opsional): <code>POST /api/session/logout</code></li>
-        </ol>
-      </div>
-
-      {/* Important notes */}
-      <div className={`card ${styles.importantCard}`}>
-        <h2 className={styles.sectionTitle}>⚠️ Catatan Penting</h2>
-        <ul className={styles.importantList}>
-          <li>Session aktif disimpan di memory. Jika server restart, panggil <code>/api/session/start</code> lagi.</li>
-          <li>Selama auth folder belum dihapus, biasanya tidak perlu scan ulang.</li>
-          <li>Jika logout / bad session, auth bisa terhapus dan perlu scan ulang.</li>
-        </ul>
-      </div>
     </>
   )
 }

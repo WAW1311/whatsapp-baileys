@@ -5,9 +5,7 @@ import Navbar from './components/Navbar'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
-import SendMessage from './pages/SendMessage'
-import SendGroup from './pages/SendGroup'
-import Groups from './pages/Groups'
+import Documentation from './pages/Documentation'
 
 function AppLayout({ children }) {
   return (
@@ -36,31 +34,11 @@ export default function App() {
             }
           />
           <Route
-            path="/send-message"
+            path="/documentation"
             element={
               <ProtectedRoute>
                 <AppLayout>
-                  <SendMessage />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/send-group"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <SendGroup />
-                </AppLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/groups"
-            element={
-              <ProtectedRoute>
-                <AppLayout>
-                  <Groups />
+                  <Documentation />
                 </AppLayout>
               </ProtectedRoute>
             }

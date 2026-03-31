@@ -5,9 +5,7 @@ import styles from './Navbar.module.css'
 
 const navLinks = [
   { to: '/dashboard', label: '🏠 Dashboard' },
-  { to: '/send-message', label: '💬 Send Message' },
-  { to: '/send-group', label: '👥 Send to Group' },
-  { to: '/groups', label: '📋 Groups' },
+  { to: '/documentation', label: '📖 Dokumentasi API' },
 ]
 
 export default function Navbar() {

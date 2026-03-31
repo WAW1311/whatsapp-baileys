@@ -29,7 +29,7 @@ function initMessageRoutes(app) {
   // =========================
   r.get("/groups", auth, async (req, res) => {
     try {
-      const userId = String(req.query.userId || req.user.id);
+      const userId = String(req.user.id);
       const sess = getSession(userId);
 
       if (!sess || !isConnected(userId)) {
@@ -68,7 +68,7 @@ function initMessageRoutes(app) {
   // =========================
   r.post("/send-message", auth, async (req, res) => {
     try {
-      const userId = String(req.body.userId || req.user.id);
+      const userId = String(req.user.id);
       const sess = getSession(userId);
       if (!sess || !isConnected(userId)) {
         return res.status(500).json({ status: false, response: "WhatsApp belum terhubung." });
@@ -123,7 +123,7 @@ function initMessageRoutes(app) {
     let filePath = null;
 
     try {
-      const userId = String(req.body.userId || req.user.id);
+      const userId = String(req.user.id);
       const sess = getSession(userId);
       if (!sess || !isConnected(userId)) {
         return res.status(500).json({ status: false, response: "WhatsApp belum terhubung." });

@@ -11,6 +11,7 @@ const auth = require("./src/middlewares/auth");
 const { initAuthRoutes } = require("./src/modules/auth");
 const { initMessageRoutes } = require("./src/modules/messages");
 const { startSession, getSession, isConnected, getQrDataUrl, logoutSession } = require("./src/modules/session");
+const { verifyToken } = require("./src/jwt");
 
 async function bootstrap() {
   await initDb();
@@ -30,9 +31,16 @@ async function bootstrap() {
   const io = socketio(server);
 
   io.on("connection", (socket) => {
-    socket.on("join", async ({ userId }) => {
-      if (!userId) return;
-      userId = String(userId);
+    socket.on("join", async () => {
+      let userId;
+      try {
+        const token = socket.handshake.auth?.token;
+        if (!token) return;
+        const decoded = verifyToken(token);
+        userId = String(decoded.id);
+      } catch (_) {
+        return;
+      }
       socket.join(`user:${userId}`);
 
       const s = getSession(userId);
@@ -50,7 +58,7 @@ async function bootstrap() {
 
   app.post("/api/session/start", auth, async (req, res) => {
     try {
-      const userId = String(req.body.userId || req.user.id);
+      const userId = String(req.user.id);
       await startSession(userId, io);
       res.json({ status: true, response: { userId } });
     } catch (e) {
@@ -60,7 +68,7 @@ async function bootstrap() {
 
   app.get("/api/session/qr", auth, async (req, res) => {
     try {
-      const userId = String(req.query.userId || req.user.id);
+      const userId = String(req.user.id);
 
       if (!getSession(userId)) {
         await startSession(userId, io);
@@ -85,7 +93,7 @@ async function bootstrap() {
 
   app.post("/api/session/logout", auth, async (req, res) => {
     try {
-      const userId = String(req.body.userId || req.user.id);
+      const userId = String(req.user.id);
       await logoutSession(userId, io);
       return res.json({
         status: true,

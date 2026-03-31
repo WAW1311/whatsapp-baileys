@@ -12,11 +12,10 @@ const endpoints = [
         auth: true,
         contentType: 'application/json atau multipart/form-data',
         body: `{
-  "userId": 1,
   "number": "081234567890",
   "message": "Halo dari API"
 }`,
-        bodyNote: 'Form-Data: userId (opsional), number (wajib), message (opsional), file_dikirim (opsional)',
+        bodyNote: 'Form-Data: number (wajib), message (opsional), file_dikirim (opsional)',
         success: `{
   "status": true,
   "response": {
@@ -38,11 +37,10 @@ const endpoints = [
         auth: true,
         contentType: 'application/json atau multipart/form-data',
         body: `{
-  "userId": 1,
   "id_group": "1203630xxxxxxxxx@g.us",
   "message": "Halo group"
 }`,
-        bodyNote: 'id_group boleh tanpa suffix, sistem otomatis tambahkan @g.us. Form-Data: userId (opsional), id_group (wajib), message (opsional), file_dikirim (opsional)',
+        bodyNote: 'id_group boleh tanpa suffix, sistem otomatis tambahkan @g.us. Form-Data: id_group (wajib), message (opsional), file_dikirim (opsional)',
         success: `{
   "status": true,
   "response": {
@@ -62,7 +60,7 @@ const endpoints = [
         method: 'GET',
         url: '/api/groups',
         auth: true,
-        query: 'userId (opsional) — contoh: /api/groups?userId=1',
+        query: undefined,
         success: `{
   "status": true,
   "response": {

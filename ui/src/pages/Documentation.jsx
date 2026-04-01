@@ -1,4 +1,8 @@
-import styles from './Documentation.module.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faBook, faCheck, faXmark, faLock, faLockOpen,
+  faTriangleExclamation, faNoteSticky,
+} from '@fortawesome/free-solid-svg-icons'
 
 const endpoints = [
   {
@@ -89,63 +93,66 @@ const endpoints = [
   }
 ]
 
-const METHOD_COLOR = {
-  GET: styles.methodGet,
-  POST: styles.methodPost,
-  PUT: styles.methodPut,
-  DELETE: styles.methodDelete,
+const METHOD_CLASSES = {
+  GET: 'bg-emerald-500',
+  POST: 'bg-blue-500',
+  PUT: 'bg-amber-500',
+  DELETE: 'bg-red-500',
 }
 
 function EndpointCard({ item }) {
   return (
-    <div className={styles.endpointCard}>
-      <div className={styles.endpointHeader}>
-        <span className={`${styles.method} ${METHOD_COLOR[item.method] || ''}`}>
+    <div className="bg-white rounded-xl shadow-sm p-5 mb-3">
+      <div className="flex items-center flex-wrap gap-2 mb-3">
+        <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase tracking-wide text-white ${METHOD_CLASSES[item.method] || 'bg-gray-500'}`}>
           {item.method}
         </span>
-        <span className={styles.endpointTitle}>
-          {item.id}. {item.title}
-        </span>
-        <code className={styles.url}>{item.url}</code>
-        <span className={`${styles.authBadge} ${item.auth ? styles.authRequired : styles.authNone}`}>
-          {item.auth ? '🔒 Auth' : '🔓 No Auth'}
+        <span className="font-semibold text-gray-900 text-sm">{item.id}. {item.title}</span>
+        <code className="text-xs bg-gray-100 px-2 py-0.5 rounded text-violet-700 font-mono">{item.url}</code>
+        <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex items-center gap-1 ${item.auth ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800'}`}>
+          <FontAwesomeIcon icon={item.auth ? faLock : faLockOpen} />
+          {item.auth ? 'Auth' : 'No Auth'}
         </span>
       </div>
 
       {item.contentType && (
-        <div className={styles.meta}>
-          <span className={styles.metaLabel}>Content-Type:</span>
+        <div className="text-sm text-gray-500 mb-1 flex gap-1.5 flex-wrap items-baseline">
+          <span className="font-semibold text-gray-700">Content-Type:</span>
           <span>{item.contentType}</span>
         </div>
       )}
 
       {item.query && (
-        <div className={styles.meta}>
-          <span className={styles.metaLabel}>Query:</span>
+        <div className="text-sm text-gray-500 mb-1 flex gap-1.5 flex-wrap items-baseline">
+          <span className="font-semibold text-gray-700">Query:</span>
           <span>{item.query}</span>
         </div>
       )}
 
       {item.body && (
-        <div className={styles.codeBlock}>
-          <div className={styles.codeLabel}>
-            Request Body {item.bodyNote && <span className={styles.bodyNote}>{item.bodyNote}</span>}
+        <div className="bg-gray-800 text-gray-200 rounded-md px-4 py-3 mt-2 text-xs overflow-x-auto">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">
+            Request Body {item.bodyNote && <span className="normal-case font-normal text-gray-500 ml-1.5">{item.bodyNote}</span>}
           </div>
-          <pre><code>{item.body}</code></pre>
+          <pre className="m-0"><code className="font-mono whitespace-pre">{item.body}</code></pre>
         </div>
       )}
 
       {item.success && (
-        <div className={`${styles.codeBlock} ${styles.codeSuccess}`}>
-          <div className={styles.codeLabel}>✅ Success Response</div>
-          <pre><code>{item.success}</code></pre>
+        <div className="bg-gray-800 text-gray-200 rounded-md px-4 py-3 mt-2 text-xs overflow-x-auto border-l-4 border-emerald-500">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+            <FontAwesomeIcon icon={faCheck} className="text-emerald-400" /> Success Response
+          </div>
+          <pre className="m-0"><code className="font-mono whitespace-pre">{item.success}</code></pre>
         </div>
       )}
 
       {item.errors && item.errors.length > 0 && (
-        <div className={styles.errors}>
-          <div className={styles.codeLabel}>⚠️ Error umum</div>
-          <ul>
+        <div className="mt-2 text-sm">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+            <FontAwesomeIcon icon={faTriangleExclamation} className="text-amber-500" /> Error umum
+          </div>
+          <ul className="pl-5 mt-1 text-gray-700 leading-relaxed list-disc">
             {item.errors.map((e, i) => (
               <li key={i}>{e}</li>
             ))}
@@ -154,9 +161,11 @@ function EndpointCard({ item }) {
       )}
 
       {item.notes && item.notes.length > 0 && (
-        <div className={styles.notes}>
-          <div className={styles.codeLabel}>📝 Catatan</div>
-          <ul>
+        <div className="mt-2 text-sm">
+          <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+            <FontAwesomeIcon icon={faNoteSticky} className="text-blue-400" /> Catatan
+          </div>
+          <ul className="pl-5 mt-1 text-gray-700 leading-relaxed list-disc">
             {item.notes.map((n, i) => (
               <li key={i}>{n}</li>
             ))}
@@ -170,25 +179,32 @@ function EndpointCard({ item }) {
 export default function Documentation() {
   return (
     <>
-      <h1 className="page-title">📖 Dokumentasi API</h1>
+      <h1 className="page-title">
+        <FontAwesomeIcon icon={faBook} className="text-violet-600" />
+        Dokumentasi API
+      </h1>
 
       {/* Format Response */}
-      <div className={`card ${styles.formatCard}`}>
-        <h2 className={styles.sectionTitle}>Format Response</h2>
-        <div className={styles.formatGrid}>
+      <div className="card mb-5">
+        <h2 className="text-base font-semibold mb-3 text-gray-700">Format Response</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <div className={`${styles.codeBlock} ${styles.codeSuccess}`}>
-              <div className={styles.codeLabel}>✅ Success</div>
-              <pre><code>{`{
+            <div className="bg-gray-800 text-gray-200 rounded-md px-4 py-3 text-xs overflow-x-auto border-l-4 border-emerald-500">
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+                <FontAwesomeIcon icon={faCheck} className="text-emerald-400" /> Success
+              </div>
+              <pre className="m-0"><code className="font-mono whitespace-pre">{`{
   "status": true,
   "response": {}
 }`}</code></pre>
             </div>
           </div>
           <div>
-            <div className={`${styles.codeBlock} ${styles.codeError}`}>
-              <div className={styles.codeLabel}>❌ Error</div>
-              <pre><code>{`{
+            <div className="bg-gray-800 text-gray-200 rounded-md px-4 py-3 text-xs overflow-x-auto border-l-4 border-red-500">
+              <div className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 flex items-center gap-1">
+                <FontAwesomeIcon icon={faXmark} className="text-red-400" /> Error
+              </div>
+              <pre className="m-0"><code className="font-mono whitespace-pre">{`{
   "status": false,
   "response": "error message"
 }`}</code></pre>
@@ -198,18 +214,23 @@ export default function Documentation() {
       </div>
 
       {/* Authentication note */}
-      <div className={`card ${styles.authNote}`}>
-        <h2 className={styles.sectionTitle}>🔒 Authentication</h2>
-        <p>Semua endpoint yang butuh auth wajib header:</p>
-        <div className={styles.codeBlock}>
-          <pre><code>Authorization: Bearer &lt;API_KEY&gt;</code></pre>
+      <div className="card mb-5">
+        <h2 className="text-base font-semibold mb-2 text-gray-700 flex items-center gap-2">
+          <FontAwesomeIcon icon={faLock} className="text-amber-500" />
+          Authentication
+        </h2>
+        <p className="text-sm text-gray-600 mb-2">Semua endpoint yang butuh auth wajib header:</p>
+        <div className="bg-gray-800 text-gray-200 rounded-md px-4 py-3 text-xs overflow-x-auto">
+          <pre className="m-0"><code className="font-mono">Authorization: Bearer &lt;API_KEY&gt;</code></pre>
         </div>
       </div>
 
       {/* Endpoint sections */}
       {endpoints.map((section) => (
-        <div key={section.section} className={styles.section}>
-          <h2 className={styles.sectionHeading}>{section.section}</h2>
+        <div key={section.section} className="mb-6">
+          <h2 className="text-lg font-bold text-violet-600 mb-3 pb-1 border-b-2 border-violet-100">
+            {section.section}
+          </h2>
           {section.items.map((item) => (
             <EndpointCard key={item.id} item={item} />
           ))}
@@ -218,3 +239,4 @@ export default function Documentation() {
     </>
   )
 }
+

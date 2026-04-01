@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHouse, faRobot, faBook, faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
 import styles from './Navbar.module.css'
 
 const navLinks = [
-  { to: '/dashboard', label: '🏠 Dashboard' },
-  { to: '/make-a-bot', label: '🤖 Make a Bot' },
-  { to: '/documentation', label: '📖 Dokumentasi API' },
+  { to: '/dashboard', icon: faHouse, label: 'Dashboard' },
+  { to: '/make-a-bot', icon: faRobot, label: 'Make a Bot' },
+  { to: '/documentation', icon: faBook, label: 'Dokumentasi API' },
 ]
 
 export default function Navbar() {
@@ -31,7 +33,7 @@ export default function Navbar() {
         onClick={() => setOpen((o) => !o)}
         aria-label="Toggle menu"
       >
-        {open ? '✕' : '☰'}
+        <FontAwesomeIcon icon={open ? faXmark : faBars} />
       </button>
 
       <div className={`${styles.menu} ${open ? styles.menuOpen : ''}`}>
@@ -45,7 +47,7 @@ export default function Navbar() {
               }
               onClick={() => setOpen(false)}
             >
-              {link.label}
+              <FontAwesomeIcon icon={link.icon} /> {link.label}
             </NavLink>
           ))}
         </div>

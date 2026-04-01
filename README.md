@@ -355,7 +355,140 @@ Contoh:
 
 ---
 
-## Socket.IO Realtime
+## Bot Endpoints
+
+## 13) Get Bot Status & Commands
+- **Method**: `GET`
+- **URL**: `/api/bot`
+- **Auth**: Yes
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "is_makeBot": true,
+    "commands": [
+      {
+        "id": 1,
+        "command": "/hello",
+        "response": "Halo! Ada yang bisa aku bantu?",
+        "created_at": "2024-01-01T00:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+---
+
+## 14) Toggle Bot Active Status
+- **Method**: `PUT`
+- **URL**: `/api/bot/toggle`
+- **Auth**: Yes
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "is_makeBot": true
+  }
+}
+```
+
+### Catatan
+- Setiap panggilan membalik status bot (aktif ↔ nonaktif).
+
+---
+
+## 15) Add Bot Command
+- **Method**: `POST`
+- **URL**: `/api/bot/commands`
+- **Auth**: Yes
+- **Content-Type**: `application/json`
+
+### Body
+```json
+{
+  "command": "/hello",
+  "response": "Halo! Ada yang bisa aku bantu?"
+}
+```
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "id": 1,
+    "command": "/hello",
+    "response": "Halo! Ada yang bisa aku bantu?"
+  }
+}
+```
+
+### Error umum
+- `400` command atau response kosong
+- `409` command sudah ada (duplikat)
+- `500` server error
+
+---
+
+## 16) Update Bot Command
+- **Method**: `PUT`
+- **URL**: `/api/bot/commands/:id`
+- **Auth**: Yes
+- **Content-Type**: `application/json`
+
+### Body
+```json
+{
+  "command": "/hello",
+  "response": "Halo bro!"
+}
+```
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "id": 1,
+    "command": "/hello",
+    "response": "Halo bro!"
+  }
+}
+```
+
+### Error umum
+- `400` command atau response kosong
+- `404` command tidak ditemukan
+- `409` command sudah ada (duplikat)
+- `500` server error
+
+---
+
+## 17) Delete Bot Command
+- **Method**: `DELETE`
+- **URL**: `/api/bot/commands/:id`
+- **Auth**: Yes
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "message": "Command deleted"
+  }
+}
+```
+
+### Error umum
+- `404` command tidak ditemukan
+- `500` server error
+
+---
 
 Server menggunakan Socket.IO untuk event QR/status.
 
@@ -388,7 +521,13 @@ Room:
    - personal: `POST /api/send-message`
    - grup: `POST /api/send-group-message`
 6. Ambil daftar grup: `GET /api/groups`
-7. Logout total (opsional): `POST /api/session/logout`
+7. Kelola bot auto-reply:
+   - Status & perintah: `GET /api/bot`
+   - Aktifkan/nonaktifkan: `PUT /api/bot/toggle`
+   - Tambah perintah: `POST /api/bot/commands`
+   - Edit perintah: `PUT /api/bot/commands/:id`
+   - Hapus perintah: `DELETE /api/bot/commands/:id`
+8. Logout total (opsional): `POST /api/session/logout`
 
 ---
 

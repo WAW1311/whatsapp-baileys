@@ -1,4 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faRobot, faCircleCheck, faBan, faPenToSquare, faPlus,
+  faTrash, faClipboardList
+} from '@fortawesome/free-solid-svg-icons'
 import api from '../api'
 import styles from './MakeABot.module.css'
 
@@ -131,7 +136,7 @@ export default function MakeABot() {
         ))}
       </div>
 
-      <h1 className="page-title">🤖 Make a Bot</h1>
+      <h1 className="page-title"><FontAwesomeIcon icon={faRobot} /> Make a Bot</h1>
 
       <div className={styles.grid}>
         {/* Toggle card */}
@@ -143,7 +148,10 @@ export default function MakeABot() {
           </p>
           <div className={styles.toggleRow}>
             <span className={styles.toggleLabel}>
-              {isMakeBot ? '✅ Bot Aktif' : '⛔ Bot Tidak Aktif'}
+              {isMakeBot
+                ? <><FontAwesomeIcon icon={faCircleCheck} /> Bot Aktif</>
+                : <><FontAwesomeIcon icon={faBan} /> Bot Tidak Aktif</>
+              }
             </span>
             <button
               className={`btn ${isMakeBot ? 'btn-danger' : 'btn-primary'}`}
@@ -158,7 +166,10 @@ export default function MakeABot() {
         {/* Add / Edit form card */}
         <div className={`card ${styles.formCard}`}>
           <h2 className={styles.sectionTitle}>
-            {editingId !== null ? '✏️ Edit Perintah' : '➕ Tambah Perintah'}
+            {editingId !== null
+              ? <><FontAwesomeIcon icon={faPenToSquare} /> Edit Perintah</>
+              : <><FontAwesomeIcon icon={faPlus} /> Tambah Perintah</>
+            }
           </h2>
           <form onSubmit={handleSubmit} className={styles.form}>
             <div className="form-group">
@@ -198,7 +209,7 @@ export default function MakeABot() {
 
         {/* Commands table card */}
         <div className={`card ${styles.tableCard}`}>
-          <h2 className={styles.sectionTitle}>📋 Daftar Perintah ({commands.length})</h2>
+          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faClipboardList} /> Daftar Perintah ({commands.length})</h2>
           {commands.length === 0 ? (
             <p className={styles.empty}>Belum ada perintah. Tambahkan di atas.</p>
           ) : (
@@ -225,14 +236,14 @@ export default function MakeABot() {
                             onClick={() => startEdit(cmd)}
                             disabled={deletingId === cmd.id}
                           >
-                            ✏️ Edit
+                            <FontAwesomeIcon icon={faPenToSquare} /> Edit
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
                             onClick={() => handleDelete(cmd.id)}
                             disabled={deletingId === cmd.id}
                           >
-                            {deletingId === cmd.id ? <span className="spinner" /> : '🗑️ Hapus'}
+                            {deletingId === cmd.id ? <span className="spinner" /> : <><FontAwesomeIcon icon={faTrash} /> Hapus</>}
                           </button>
                         </div>
                       </td>

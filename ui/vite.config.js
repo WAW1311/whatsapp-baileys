@@ -6,19 +6,19 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: 'http://203.194.113.161:8000',
         changeOrigin: true,
       },
       '/health': {
-        target: 'http://localhost:8000',
+        target: 'http://203.194.113.161:8000',
         changeOrigin: true,
       },
       '/assets': {
-        target: 'http://localhost:8000',
+        target: 'http://203.194.113.161:8000',
         changeOrigin: true,
       },
       '/socket.io': {
-        target: 'http://localhost:8000',
+        target: 'http://203.194.113.161:8000',
         changeOrigin: true,
         ws: true,
       },

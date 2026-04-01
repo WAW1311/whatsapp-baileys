@@ -10,6 +10,7 @@ const { initDb } = require("./src/db");
 const auth = require("./src/middlewares/auth");
 const { initAuthRoutes } = require("./src/modules/auth");
 const { initMessageRoutes } = require("./src/modules/messages");
+const { initBotRoutes } = require("./src/modules/bot");
 const { startSession, getSession, isConnected, getQrDataUrl, logoutSession } = require("./src/modules/session");
 const { verifyToken } = require("./src/jwt");
 
@@ -55,6 +56,7 @@ async function bootstrap() {
 
   initAuthRoutes(app);
   initMessageRoutes(app);
+  initBotRoutes(app);
 
   app.post("/api/session/start", auth, async (req, res) => {
     try {

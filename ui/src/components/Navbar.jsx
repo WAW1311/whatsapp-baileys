@@ -5,6 +5,7 @@ import styles from './Navbar.module.css'
 
 const navLinks = [
   { to: '/dashboard', label: '🏠 Dashboard' },
+  { to: '/make-a-bot', label: '🤖 Make a Bot' },
   { to: '/documentation', label: '📖 Dokumentasi API' },
 ]
 

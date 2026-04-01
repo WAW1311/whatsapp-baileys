@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Documentation from './pages/Documentation'
+import MakeABot from './pages/MakeABot'
 
 function AppLayout({ children }) {
   return (
@@ -39,6 +40,16 @@ export default function App() {
               <ProtectedRoute>
                 <AppLayout>
                   <Documentation />
+                </AppLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/make-a-bot"
+            element={
+              <ProtectedRoute>
+                <AppLayout>
+                  <MakeABot />
                 </AppLayout>
               </ProtectedRoute>
             }

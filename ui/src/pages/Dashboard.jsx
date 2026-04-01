@@ -49,7 +49,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
 
-    const socket = io('/', { auth: { token }, transports: ['websocket', 'polling'] })
+    const socket = io('https://waw1311.cloud', { auth: { token }, transports: ['websocket', 'polling'] })
     socketRef.current = socket
 
     socket.on('connect', () => {

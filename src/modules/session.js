@@ -12,6 +12,7 @@ const qrcode = require("qrcode");
 const fs = require("fs");
 const path = require("path");
 const { wrapSocket } = require('baileys-antiban');
+const { pool } = require("../db");
 
 // const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 const sessions = new Map();
@@ -57,6 +58,42 @@ async function startSession(userId, io) {
   sessions.set(userId, { sock, qr: null });
   // store.bind(sock.ev);
   sock.ev.on("creds.update", saveCreds);
+
+  sock.ev.on("messages.upsert", async ({ messages, type }) => {
+    if (type !== "notify") return;
+    for (const msg of messages) {
+      // Only handle incoming private messages (not sent by the bot itself)
+      if (msg.key.fromMe) continue;
+      const jid = msg.key.remoteJid;
+      if (!jid || jid.endsWith("@g.us") || jid.endsWith("@broadcast")) continue;
+
+      const text =
+        msg.message?.conversation ||
+        msg.message?.extendedTextMessage?.text ||
+        "";
+
+      if (!text) continue;
+
+      try {
+        const [[row]] = await pool.query(
+          `SELECT bc.response
+           FROM users u
+           JOIN bot_commands bc ON bc.user_id = u.id AND bc.command = ?
+           WHERE u.id = ? AND u.is_makeBot = 1
+           LIMIT 1`,
+          [text.trim(), userId]
+        );
+        if (!row) continue;
+
+        const s = getSession(userId);
+        if (s?.sock) {
+          await s.sock.sendMessage(jid, { text: row.response });
+        }
+      } catch (e) {
+        console.error(`Bot auto-reply error for user ${userId}:`, e);
+      }
+    }
+  });
 
   sock.ev.on("connection.update", async (update) => {
     const s = getSession(userId);

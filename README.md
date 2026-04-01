@@ -328,6 +328,150 @@ Contoh:
 
 ---
 
+## Bot Endpoints
+
+## 13) Get Bot Status & Commands
+- **Method**: `GET`
+- **URL**: `/api/bot`
+- **Auth**: Yes
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "is_makeBot": true,
+    "commands": [
+      {
+        "id": 1,
+        "command": "/hello",
+        "response": "Hai, aku bot!",
+        "created_at": "2024-01-01T00:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+### Error umum
+- `404` user tidak ditemukan
+- `500` server error
+
+---
+
+## 14) Toggle Bot Status
+- **Method**: `PUT`
+- **URL**: `/api/bot/toggle`
+- **Auth**: Yes
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "is_makeBot": true
+  }
+}
+```
+
+### Catatan
+- Mengubah status bot (aktif ↔ tidak aktif) untuk user yang sedang login.
+- Jika `is_makeBot` = `true`, bot akan membalas pesan masuk sesuai perintah terdaftar.
+
+### Error umum
+- `404` user tidak ditemukan
+- `500` server error
+
+---
+
+## 15) Add Bot Command
+- **Method**: `POST`
+- **URL**: `/api/bot/commands`
+- **Auth**: Yes
+- **Content-Type**: `application/json`
+
+### Body
+```json
+{
+  "command": "/hello",
+  "response": "Hai, aku bot! Ada yang bisa aku bantu?"
+}
+```
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "id": 1,
+    "command": "/hello",
+    "response": "Hai, aku bot! Ada yang bisa aku bantu?"
+  }
+}
+```
+
+### Error umum
+- `400` command atau response tidak disertakan / kosong
+- `409` command sudah ada (duplikat)
+- `500` server error
+
+---
+
+## 16) Update Bot Command
+- **Method**: `PUT`
+- **URL**: `/api/bot/commands/:id`
+- **Auth**: Yes
+- **Content-Type**: `application/json`
+
+### Body
+```json
+{
+  "command": "/hello",
+  "response": "Hai! Ada yang bisa aku bantu?"
+}
+```
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "id": 1,
+    "command": "/hello",
+    "response": "Hai! Ada yang bisa aku bantu?"
+  }
+}
+```
+
+### Error umum
+- `400` command atau response tidak disertakan / kosong
+- `404` command tidak ditemukan
+- `409` command sudah ada (duplikat)
+- `500` server error
+
+---
+
+## 17) Delete Bot Command
+- **Method**: `DELETE`
+- **URL**: `/api/bot/commands/:id`
+- **Auth**: Yes
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "message": "Command deleted"
+  }
+}
+```
+
+### Error umum
+- `404` command tidak ditemukan
+- `500` server error
+
+---
+
 ## Utility Endpoints
 
 ## 10) Health Check
@@ -388,7 +532,12 @@ Room:
    - personal: `POST /api/send-message`
    - grup: `POST /api/send-group-message`
 6. Ambil daftar grup: `GET /api/groups`
-7. Logout total (opsional): `POST /api/session/logout`
+7. Kelola bot otomatis:
+   - Aktifkan: `PUT /api/bot/toggle`
+   - Tambah perintah: `POST /api/bot/commands`
+   - Edit perintah: `PUT /api/bot/commands/:id`
+   - Hapus perintah: `DELETE /api/bot/commands/:id`
+8. Logout total (opsional): `POST /api/session/logout`
 
 ---
 

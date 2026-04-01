@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import styles from './Auth.module.css'
 
 export default function Register() {
   const { register } = useAuth()
@@ -29,12 +28,12 @@ export default function Register() {
   }
 
   return (
-    <div className={styles.authWrapper}>
-      <div className={`card ${styles.authCard}`}>
-        <div className={styles.authHeader}>
-          <img src="/favicon.svg" alt="wawbot" />
-          <h1 className={styles.authTitle}>WAWBOT</h1>
-          <p className={styles.authSubtitle}>Create a new account</p>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-violet-50 to-gray-100">
+      <div className="card w-full max-w-[420px]">
+        <div className="text-center mb-7">
+          <img src="/favicon.svg" alt="wawbot" className="mx-auto" />
+          <h1 className="text-2xl font-bold text-gray-900 mt-2">WAWBOT</h1>
+          <p className="text-gray-500 text-sm mt-1">Create a new account</p>
         </div>
 
         {error && <div className="alert alert-error">{error}</div>}
@@ -85,18 +84,19 @@ export default function Register() {
 
           <button
             type="submit"
-            className={`btn btn-primary ${styles.authBtn}`}
+            className="btn btn-primary w-full mt-1 py-2.5 text-base"
             disabled={loading}
           >
             {loading ? <span className="spinner" /> : 'Create Account'}
           </button>
         </form>
 
-        <p className={styles.authFooter}>
+        <p className="text-center mt-5 text-sm text-gray-500">
           Already have an account?{' '}
-          <Link to="/login">Sign in</Link>
+          <Link to="/login" className="text-violet-600 font-medium no-underline hover:underline">Sign in</Link>
         </p>
       </div>
     </div>
   )
 }
+

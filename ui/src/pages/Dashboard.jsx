@@ -2,7 +2,11 @@ import { useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import { useAuth } from '../context/AuthContext'
 import api from '../api'
-import styles from './Dashboard.module.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faUser, faMobileScreen, faClipboardList, faCircleXmark,
+  faCopy, faPlay, faEject,
+} from '@fortawesome/free-solid-svg-icons'
 
 function useToast() {
   const [toasts, setToasts] = useState([])
@@ -115,78 +119,87 @@ export default function Dashboard() {
 
       <h1 className="page-title">Dashboard</h1>
 
-      <div className={styles.grid}>
-        <div className={`card ${styles.userCard}`}>
-          <h2 className={styles.sectionTitle}>👤 Account</h2>
-          <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Name</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {/* Account card */}
+        <div className="card">
+          <h2 className="flex items-center gap-2 text-base font-semibold mb-4 text-gray-700">
+            <FontAwesomeIcon icon={faUser} className="text-violet-600" />
+            Account
+          </h2>
+          <div className="flex justify-between py-1.5 border-b border-gray-100 text-sm last:border-b-0">
+            <span className="text-gray-500 font-medium">Name</span>
             <span>{user?.name || '—'}</span>
           </div>
-          <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>Email</span>
+          <div className="flex justify-between py-1.5 border-b border-gray-100 text-sm">
+            <span className="text-gray-500 font-medium">Email</span>
             <span>{user?.email || '—'}</span>
           </div>
-          {/* <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>User ID</span>
-            <span className={styles.mono}>{user?.id || user?._id || '—'}</span>
-          </div> */}
-          <div className={styles.infoRow}>
-            <span className={styles.infoLabel}>API Key</span>
-            <div className={styles.tokenWrap}>
-              <span className={styles.token}>{maskToken(token)}</span>
+          <div className="flex justify-between py-1.5 text-sm items-center">
+            <span className="text-gray-500 font-medium">API Key</span>
+            <div className="inline-flex items-center gap-2 min-w-0">
+              <span className="font-mono text-xs truncate max-w-[140px]">{maskToken(token)}</span>
               <button
                 type="button"
-                className={styles.copyBtn}
+                className="inline-flex items-center gap-1.5 border border-gray-300 bg-white text-gray-800 rounded-lg px-2.5 py-1.5 text-xs cursor-pointer transition-all hover:bg-gray-50 disabled:opacity-55 disabled:cursor-not-allowed"
                 onClick={copyApiKey}
                 disabled={!token}
                 aria-label="Copy API Key"
                 title="Copy API Key"
               >
-                📋 Copy
+                <FontAwesomeIcon icon={faCopy} />
+                Copy
               </button>
             </div>
           </div>
         </div>
 
-        <div className={`card ${styles.sessionCard}`}>
-          <h2 className={styles.sectionTitle}>📱 WhatsApp Session</h2>
+        {/* WhatsApp Session card – spans 2 rows on md+ */}
+        <div className="card md:row-span-2">
+          <h2 className="flex items-center gap-2 text-base font-semibold mb-4 text-gray-700">
+            <FontAwesomeIcon icon={faMobileScreen} className="text-violet-600" />
+            WhatsApp Session
+          </h2>
 
-          <div className={styles.qrArea}>
+          <div className="min-h-[200px] flex items-center justify-center mb-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 p-4">
             {qrImage ? (
-              <div className={styles.qrBox}>
-                <img src={qrImage} alt="QR Code" className={styles.qrImg} />
-                <p className={styles.qrHint}>Scan with WhatsApp on your phone</p>
+              <div className="text-center">
+                <img src={qrImage} alt="QR Code" className="max-w-[200px] w-full rounded-md" />
+                <p className="text-xs text-gray-500 mt-2">Scan with WhatsApp on your phone</p>
               </div>
             ) : statusIcon ? (
-              <div className={styles.statusBox}>
-                <img src={statusIcon} alt="Status" className={styles.statusImg} />
+              <div className="flex items-center justify-center">
+                <img src={statusIcon} alt="Status" className="w-20 h-20 object-contain" />
               </div>
             ) : (
-              <div className={styles.noSession}>
-                <span className={styles.noSessionIcon}>📵</span>
-                <p>No active session. Start one to get a QR code.</p>
+              <div className="text-center text-gray-400">
+                <FontAwesomeIcon icon={faCircleXmark} className="text-5xl mb-2 block" />
+                <p className="text-sm">No active session. Start one to get a QR code.</p>
               </div>
             )}
           </div>
 
-          <div className={styles.sessionActions}>
+          <div className="flex gap-3 flex-wrap">
             <button className="btn btn-primary" onClick={startSession} disabled={sessionLoading}>
-              {sessionLoading ? <span className="spinner" /> : '▶ Start Session'}
+              {sessionLoading ? <span className="spinner" /> : <><FontAwesomeIcon icon={faPlay} /> Start Session</>}
             </button>
             <button className="btn btn-danger" onClick={logoutSession} disabled={logoutLoading}>
-              {logoutLoading ? <span className="spinner" /> : '⏏ Logout Session'}
+              {logoutLoading ? <span className="spinner" /> : <><FontAwesomeIcon icon={faEject} /> Logout Session</>}
             </button>
           </div>
         </div>
 
-        <div className={`card ${styles.logCard}`}>
-          <h2 className={styles.sectionTitle}>📋 Realtime Logs</h2>
-          <div className={styles.logBox}>
+        {/* Realtime Logs card */}
+        <div className="card">
+          <h2 className="flex items-center gap-2 text-base font-semibold mb-4 text-gray-700">
+            <FontAwesomeIcon icon={faClipboardList} className="text-violet-600" />
+            Realtime Logs
+          </h2>
+          <div className="bg-gray-800 text-green-200 rounded-md p-3 h-44 overflow-y-auto font-mono text-xs leading-relaxed">
             {logs.length === 0 ? (
-              <span className={styles.logEmpty}>No logs yet…</span>
+              <span className="text-gray-500 italic">No logs yet…</span>
             ) : (
               logs.map((l, i) => (
-                <div key={i} className={styles.logLine}>{l}</div>
+                <div key={i} className="py-0.5 border-b border-white/5">{l}</div>
               ))
             )}
           </div>

@@ -1,6 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import api from '../api'
-import styles from './MakeABot.module.css'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faRobot, faCheckCircle, faBan, faPen, faPlus,
+  faClipboardList, faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 
 function useToast() {
   const [toasts, setToasts] = useState([])
@@ -117,7 +121,7 @@ export default function MakeABot() {
 
   if (loading) {
     return (
-      <div className={styles.loadingWrap}>
+      <div className="flex justify-center items-center min-h-[200px]">
         <span className="spinner spinner-dark" />
       </div>
     )
@@ -131,19 +135,25 @@ export default function MakeABot() {
         ))}
       </div>
 
-      <h1 className="page-title">🤖 Make a Bot</h1>
+      <h1 className="page-title">
+        <FontAwesomeIcon icon={faRobot} className="text-violet-600" />
+        Make a Bot
+      </h1>
 
-      <div className={styles.grid}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Toggle card */}
-        <div className={`card ${styles.toggleCard}`}>
-          <h2 className={styles.sectionTitle}>Status Bot</h2>
-          <p className={styles.desc}>
+        <div className="card flex flex-col gap-3">
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Status Bot</h2>
+          <p className="text-sm text-gray-500 leading-relaxed">
             Aktifkan fitur bot agar WhatsApp dapat membalas pesan masuk secara otomatis
             berdasarkan perintah yang telah kamu definisikan.
           </p>
-          <div className={styles.toggleRow}>
-            <span className={styles.toggleLabel}>
-              {isMakeBot ? '✅ Bot Aktif' : '⛔ Bot Tidak Aktif'}
+          <div className="flex items-center justify-between gap-4 flex-wrap mt-1">
+            <span className="text-base font-semibold text-gray-700 flex items-center gap-2">
+              {isMakeBot
+                ? <><FontAwesomeIcon icon={faCheckCircle} className="text-green-500" /> Bot Aktif</>
+                : <><FontAwesomeIcon icon={faBan} className="text-red-500" /> Bot Tidak Aktif</>
+              }
             </span>
             <button
               className={`btn ${isMakeBot ? 'btn-danger' : 'btn-primary'}`}
@@ -156,11 +166,14 @@ export default function MakeABot() {
         </div>
 
         {/* Add / Edit form card */}
-        <div className={`card ${styles.formCard}`}>
-          <h2 className={styles.sectionTitle}>
-            {editingId !== null ? '✏️ Edit Perintah' : '➕ Tambah Perintah'}
+        <div className="card">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            {editingId !== null
+              ? <><FontAwesomeIcon icon={faPen} className="text-violet-600" /> Edit Perintah</>
+              : <><FontAwesomeIcon icon={faPlus} className="text-violet-600" /> Tambah Perintah</>
+            }
           </h2>
-          <form onSubmit={handleSubmit} className={styles.form}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2">
             <div className="form-group">
               <label htmlFor="command">Perintah</label>
               <input
@@ -176,14 +189,14 @@ export default function MakeABot() {
               <label htmlFor="response">Tanggapan</label>
               <textarea
                 id="response"
-                className={`form-control ${styles.textarea}`}
+                className="form-control resize-y min-h-[80px]"
                 placeholder="Contoh: Hai, aku bot! Ada yang bisa aku bantu?"
                 value={form.response}
                 onChange={(e) => setForm((f) => ({ ...f, response: e.target.value }))}
                 rows={4}
               />
             </div>
-            <div className={styles.formActions}>
+            <div className="flex gap-3 flex-wrap mt-1">
               <button type="submit" className="btn btn-primary" disabled={saving}>
                 {saving ? <span className="spinner" /> : editingId !== null ? 'Simpan Perubahan' : 'Tambah'}
               </button>
@@ -197,10 +210,13 @@ export default function MakeABot() {
         </div>
 
         {/* Commands table card */}
-        <div className={`card ${styles.tableCard}`}>
-          <h2 className={styles.sectionTitle}>📋 Daftar Perintah ({commands.length})</h2>
+        <div className="card md:col-span-2">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <FontAwesomeIcon icon={faClipboardList} className="text-violet-600" />
+            Daftar Perintah ({commands.length})
+          </h2>
           {commands.length === 0 ? (
-            <p className={styles.empty}>Belum ada perintah. Tambahkan di atas.</p>
+            <p className="text-gray-500 text-sm text-center py-6">Belum ada perintah. Tambahkan di atas.</p>
           ) : (
             <div className="table-wrapper">
               <table>
@@ -214,25 +230,29 @@ export default function MakeABot() {
                 </thead>
                 <tbody>
                   {commands.map((cmd, idx) => (
-                    <tr key={cmd.id} className={editingId === cmd.id ? styles.editingRow : ''}>
+                    <tr key={cmd.id} className={editingId === cmd.id ? 'bg-violet-50' : ''}>
                       <td>{idx + 1}</td>
-                      <td><code className={styles.code}>{cmd.command}</code></td>
-                      <td className={styles.responseCell}>{cmd.response}</td>
                       <td>
-                        <div className={styles.actionBtns}>
+                        <code className="bg-gray-100 px-1.5 py-0.5 rounded text-[0.88rem] text-violet-700 font-mono">
+                          {cmd.command}
+                        </code>
+                      </td>
+                      <td className="max-w-[260px] break-words whitespace-pre-wrap">{cmd.response}</td>
+                      <td>
+                        <div className="flex gap-2 flex-wrap">
                           <button
                             className="btn btn-secondary btn-sm"
                             onClick={() => startEdit(cmd)}
                             disabled={deletingId === cmd.id}
                           >
-                            ✏️ Edit
+                            <FontAwesomeIcon icon={faPen} /> Edit
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
                             onClick={() => handleDelete(cmd.id)}
                             disabled={deletingId === cmd.id}
                           >
-                            {deletingId === cmd.id ? <span className="spinner" /> : '🗑️ Hapus'}
+                            {deletingId === cmd.id ? <span className="spinner" /> : <><FontAwesomeIcon icon={faTrash} /> Hapus</>}
                           </button>
                         </div>
                       </td>
@@ -247,3 +267,4 @@ export default function MakeABot() {
     </>
   )
 }
+

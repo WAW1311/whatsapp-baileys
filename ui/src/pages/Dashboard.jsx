@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import { useAuth } from '../context/AuthContext'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faUser, faMobileScreen, faClipboardList, faMobileScreenButton,
+  faCopy, faPlay, faRightFromBracket
+} from '@fortawesome/free-solid-svg-icons'
 import api from '../api'
 import styles from './Dashboard.module.css'
 
@@ -117,7 +122,7 @@ export default function Dashboard() {
 
       <div className={styles.grid}>
         <div className={`card ${styles.userCard}`}>
-          <h2 className={styles.sectionTitle}>👤 Account</h2>
+          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faUser} /> Account</h2>
           <div className={styles.infoRow}>
             <span className={styles.infoLabel}>Name</span>
             <span>{user?.name || '—'}</span>
@@ -142,14 +147,14 @@ export default function Dashboard() {
                 aria-label="Copy API Key"
                 title="Copy API Key"
               >
-                📋 Copy
+                <FontAwesomeIcon icon={faCopy} /> Copy
               </button>
             </div>
           </div>
         </div>
 
         <div className={`card ${styles.sessionCard}`}>
-          <h2 className={styles.sectionTitle}>📱 WhatsApp Session</h2>
+          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faMobileScreen} /> WhatsApp Session</h2>
 
           <div className={styles.qrArea}>
             {qrImage ? (
@@ -163,7 +168,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className={styles.noSession}>
-                <span className={styles.noSessionIcon}>📵</span>
+                <span className={styles.noSessionIcon}><FontAwesomeIcon icon={faMobileScreenButton} /></span>
                 <p>No active session. Start one to get a QR code.</p>
               </div>
             )}
@@ -171,16 +176,16 @@ export default function Dashboard() {
 
           <div className={styles.sessionActions}>
             <button className="btn btn-primary" onClick={startSession} disabled={sessionLoading}>
-              {sessionLoading ? <span className="spinner" /> : '▶ Start Session'}
+              {sessionLoading ? <span className="spinner" /> : <><FontAwesomeIcon icon={faPlay} /> Start Session</>}
             </button>
             <button className="btn btn-danger" onClick={logoutSession} disabled={logoutLoading}>
-              {logoutLoading ? <span className="spinner" /> : '⏏ Logout Session'}
+              {logoutLoading ? <span className="spinner" /> : <><FontAwesomeIcon icon={faRightFromBracket} /> Logout Session</>}
             </button>
           </div>
         </div>
 
         <div className={`card ${styles.logCard}`}>
-          <h2 className={styles.sectionTitle}>📋 Realtime Logs</h2>
+          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faClipboardList} /> Realtime Logs</h2>
           <div className={styles.logBox}>
             {logs.length === 0 ? (
               <span className={styles.logEmpty}>No logs yet…</span>

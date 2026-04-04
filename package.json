@@ -1,37 +1,37 @@
 {
-  "name": "bot_wa",
-  "version": "1.0.0",
-  "description": "whatsapp bot sederhana",
-  "main": "index.js",
+  "name": "wawbot-nextjs",
+  "version": "2.0.0",
+  "description": "WhatsApp Bot – fullstack Next.js + Supabase",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js"
   },
-  "keywords": [
-    "whastapp"
-  ],
-  "author": "wahyuandrewibowo311@gmail.com",
-  "license": "ISC",
   "dependencies": {
     "@adiwajshing/keyed-db": "^0.2.4",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@hapi/boom": "^10.0.1",
+    "@supabase/supabase-js": "^2.45.0",
     "@whiskeysockets/baileys": "^6.7.21",
+    "axios": "^1.7.2",
     "baileys-antiban": "^1.1.0",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.3.1",
-    "eslint": "^10.1.0",
-    "express": "^5.2.1",
-    "express-fileupload": "^1.5.2",
-    "ffmpeg": "^0.0.4",
-    "jest": "^30.3.0",
-    "jimp": "^1.6.0",
     "jsonwebtoken": "^9.0.3",
-    "link-preview-js": "^3.0.0",
-    "mysql2": "^3.20.0",
-    "nodemon": "^3.1.14",
+    "next": "15.5.14",
+    "pino": "^9.6.0",
     "qrcode": "^1.5.4",
-    "qrcode-terminal": "^0.12.0",
-    "request": "^2.88.2",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "sharp": "^0.34.5",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "socket.io-client": "^4.8.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "eslint-config-next": "15.5.14"
   }
 }

@@ -1,2 +1,7 @@
 node_modules/
 pat.txt
+.env.local
+.next/
+out/
+uploads/
+baileys_auth_info/

@@ -172,6 +172,19 @@ export default function Documentation() {
     <>
       <h1 className="page-title">📖 Dokumentasi API</h1>
 
+      {/* Base URL */}
+      <div className={`card ${styles.authNote}`}>
+        <h2 className={styles.sectionTitle}>🌐 Base URL</h2>
+        <p>Semua endpoint relatif terhadap base URL berikut:</p>
+        <div className={styles.codeBlock}>
+          <pre><code>https://api-wawbot.wawtech.id</code></pre>
+        </div>
+        <p>
+          Contoh: <code className={styles.url}>POST https://api-wawbot.wawtech.id/api/auth/login</code>. Saat
+          development lokal, ganti dengan <code className={styles.url}>http://localhost:8000</code>.
+        </p>
+      </div>
+
       {/* Format Response */}
       <div className={`card ${styles.formatCard}`}>
         <h2 className={styles.sectionTitle}>Format Response</h2>

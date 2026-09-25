@@ -1,5 +1,93 @@
 # WhatsApp Baileys API Documentation
 
+REST API + bot auto-reply WhatsApp berbasis **Baileys**, dilengkapi dashboard React di folder `ui/`.
+
+## Stack
+- **Backend**: Node.js, Express 5, `@whiskeysockets/baileys`, MySQL (`mysql2`), JWT, socket.io
+- **Frontend** (`ui/`): React 19, Vite 8, react-router-dom, Tailwind v4
+
+## Prasyarat
+- Node.js **20.19+** (syarat Vite 8)
+- MySQL 8+ / MariaDB
+- Git
+
+## 1. Clone repository
+```bash
+git clone https://github.com/WAW1311/whatsapp-baileys.git
+cd whatsapp-baileys
+```
+
+## 2. Konfigurasi `.env` (satu file: backend + frontend)
+Satu `.env` di root dibaca backend (Express, via `src/config.js`) **dan** frontend (Vite, `envDir` → root). Salin dari template:
+```bash
+cp .env.example .env
+```
+Isi nilainya:
+
+| Variabel | Ruang lingkup | Keterangan |
+|---|---|---|
+| `PORT` | backend | Port server (default `8000`) |
+| `JWT_SECRET` | backend 🔒 | Kunci rahasia JWT (wajib diisi) |
+| `JWT_EXPIRES` | backend | Masa berlaku token, mis. `7d` |
+| `MYSQL_HOST` | backend | Host MySQL (default `127.0.0.1`) |
+| `MYSQL_PORT` | backend | Port MySQL (default `3306`) |
+| `MYSQL_USER` | backend | User MySQL |
+| `MYSQL_PASSWORD` | backend 🔒 | Password MySQL |
+| `MYSQL_DATABASE` | backend | Nama database (default `bot_wa`) |
+| `VITE_API_BASE_URL` | frontend 🌐 | Origin backend untuk axios, socket.io, & target proxy dev |
+
+> **Keamanan:** Vite hanya meng-expose variabel ber-prefix `VITE_` ke bundle browser. **Jangan** memberi prefix `VITE_` pada `JWT_SECRET`/`MYSQL_*` — nanti ikut terbawa ke JS publik. File `.env` sudah masuk `.gitignore`.
+>
+> **`VITE_API_BASE_URL`:** kosongkan saat development (pakai proxy Vite same-origin); isi origin penuh untuk production, mis. `https://waw1311.cloud`.
+
+## 3. Siapkan database
+Buat database sesuai `MYSQL_DATABASE`. Tabel (`users`, `bot_commands`) dibuat **otomatis** saat server pertama kali dijalankan.
+```sql
+CREATE DATABASE bot_wa CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+## 4. Jalankan backend
+```bash
+npm install
+npm start        # node index.js → http://localhost:8000
+```
+Mode dev (auto-reload, opsional): `npx nodemon index.js`
+
+## 5. Jalankan frontend (dashboard)
+```bash
+cd ui
+npm install
+npm run dev      # http://localhost:5173
+```
+Saat dev, biarkan `VITE_API_BASE_URL` kosong: request `/api` & `/socket.io` otomatis di-proxy ke backend (target = `VITE_API_BASE_URL` atau fallback `http://localhost:8000`).
+
+Build production:
+```bash
+npm run build    # output ke ui/dist
+npm run preview
+```
+Jika hasil build di-host di origin berbeda dari API, set `VITE_API_BASE_URL` ke origin backend sebelum build.
+
+## Alur singkat pemakaian
+1. Buka dashboard → **Register** → **Login**
+2. Salin **API Key** dari dashboard
+3. **Start Session** → scan **QR** dengan WhatsApp
+4. Kirim pesan / kelola bot (lewat UI atau API di bawah)
+
+---
+
+# API Reference
+
+## Base URL
+
+Semua endpoint relatif terhadap base URL berikut:
+
+```
+https://api-wawbot.wawtech.id
+```
+
+Contoh: `POST https://api-wawbot.wawtech.id/api/auth/login`. Saat development lokal, ganti dengan `http://localhost:8000`.
+
 ## Format Response
 
 ### Success
@@ -27,6 +115,8 @@ Semua endpoint yang butuh auth wajib header:
 ```http
 Authorization: Bearer <JWT_TOKEN>
 ```
+
+> **Identitas diambil dari token.** Server selalu memakai `userId` milik pemegang token (dari JWT), bukan dari body/query. Field `userId` yang muncul pada endpoint di bawah **hanya ada di response** (informatif) — mengirimnya sebagai input tidak berpengaruh; kamu hanya bisa mengakses session milikmu sendiri.
 
 ---
 
@@ -116,6 +206,27 @@ Authorization: Bearer <JWT_TOKEN>
 
 ---
 
+## 3b) Logout (cabut token)
+- **Method**: `POST`
+- **URL**: `/api/auth/logout`
+- **Auth**: Yes
+
+Menaikkan `token_version` user sehingga **semua JWT lama miliknya langsung tidak berlaku**. Setelah ini wajib login ulang. Berguna saat token bocor / logout dari semua perangkat.
+
+### Success
+```json
+{
+  "status": true,
+  "response": {
+    "message": "Logout berhasil, semua token dicabut."
+  }
+}
+```
+
+> Catatan: ini berbeda dari `POST /api/session/logout` yang hanya memutus sesi WhatsApp, bukan token login.
+
+---
+
 ## Session Endpoints
 
 ## 4) Start Session
@@ -124,12 +235,8 @@ Authorization: Bearer <JWT_TOKEN>
 - **Auth**: Yes
 - **Content-Type**: `application/json`
 
-### Body (opsional)
-```json
-{
-  "userId": 1
-}
-```
+### Body
+Tidak perlu body — `userId` diambil dari token.
 
 ### Success
 ```json
@@ -147,10 +254,6 @@ Authorization: Bearer <JWT_TOKEN>
 - **Method**: `GET`
 - **URL**: `/api/session/qr`
 - **Auth**: Yes
-- **Query**: `userId` (opsional)
-
-Contoh:
-`/api/session/qr?userId=1`
 
 ### Success (QR tersedia)
 ```json
@@ -179,12 +282,8 @@ Contoh:
 - **Auth**: Yes
 - **Content-Type**: `application/json`
 
-### Body (opsional)
-```json
-{
-  "userId": 1
-}
-```
+### Body
+Tidak perlu body — `userId` diambil dari token.
 
 ### Success
 ```json
@@ -217,14 +316,12 @@ Contoh:
 ### Body JSON (text)
 ```json
 {
-  "userId": 1,
   "number": "081234567890",
   "message": "Halo dari API"
 }
 ```
 
 ### Body Form-Data (media)
-- `userId` (opsional)
 - `number` (wajib)
 - `message` (opsional)
 - `file_dikirim` (opsional, file)
@@ -258,7 +355,6 @@ Contoh:
 ### Body JSON (text)
 ```json
 {
-  "userId": 1,
   "id_group": "1203630xxxxxxxxx@g.us",
   "message": "Halo group"
 }
@@ -267,7 +363,6 @@ Contoh:
 > `id_group` boleh juga tanpa suffix, sistem akan otomatis tambahkan `@g.us`.
 
 ### Body Form-Data (media)
-- `userId` (opsional)
 - `id_group` (wajib)
 - `message` (opsional)
 - `file_dikirim` (opsional, file)
@@ -294,10 +389,6 @@ Contoh:
 - **Method**: `GET`
 - **URL**: `/api/groups`
 - **Auth**: Yes
-- **Query**: `userId` (opsional)
-
-Contoh:
-`/api/groups?userId=1`
 
 ### Success
 ```json
@@ -493,13 +584,9 @@ Contoh:
 Server menggunakan Socket.IO untuk event QR/status.
 
 ## Join Room
-- Event: `join`
-- Payload:
-```json
-{
-  "userId": 1
-}
-```
+- Autentikasi: kirim JWT saat koneksi via handshake `auth.token`, mis. `io(BASE_URL, { auth: { token } })`.
+- Event: `join` (tanpa payload).
+- Server memverifikasi token lalu memasukkan socket ke room miliknya sendiri. `userId` diambil dari token, bukan dari klien.
 
 Room:
 - `user:<userId>`

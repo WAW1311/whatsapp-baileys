@@ -1,5 +1,6 @@
 const {
   default: makeWASocket,
+  Browsers,
   DisconnectReason,
   fetchLatestBaileysVersion,
   isJidBroadcast,
@@ -39,6 +40,43 @@ function deleteAuthDir(userId) {
   }
 }
 
+// --- Persistensi state warm-up anti-ban ---
+// baileys-antiban@1.1.0 tidak menulis statePath otomatis, jadi kita simpan/muat
+// manual agar progres warm-up tidak reset tiap server restart.
+function warmUpStatePath(userId) {
+  return path.join(process.cwd(), "baileys_auth_info", String(userId), "warmup.json");
+}
+
+function loadWarmUpState(userId) {
+  try {
+    const raw = fs.readFileSync(warmUpStatePath(userId), "utf8");
+    return JSON.parse(raw);
+  } catch {
+    return undefined; // belum ada / rusak → mulai warm-up baru
+  }
+}
+
+function saveWarmUpState(userId) {
+  const s = getSession(userId);
+  if (!s?.sock?.antiban) return;
+  try {
+    const state = s.sock.antiban.exportWarmUpState();
+    const file = warmUpStatePath(userId);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, JSON.stringify(state));
+  } catch (e) {
+    console.error(`Gagal menyimpan warm-up state user ${userId}:`, e);
+  }
+}
+
+function stopWarmUpAutosave(userId) {
+  const s = getSession(userId);
+  if (s?.saveTimer) {
+    clearInterval(s.saveTimer);
+    s.saveTimer = null;
+  }
+}
+
 async function startSession(userId, io) {
   userId = String(userId);
   if (getSession(userId)?.sock) return getSession(userId);
@@ -47,13 +85,41 @@ async function startSession(userId, io) {
   const { state, saveCreds } = await useMultiFileAuthState(authPath);
   const { version } = await fetchLatestBaileysVersion();
 
-  const sock = wrapSocket(makeWASocket({
-    printQRInTerminal: false,
-    auth: state,
-    logger: pino({ level: "silent" }),
-    version,
-    shouldIgnoreJid: jid => isJidBroadcast(jid),
-  }));
+  // Konfigurasi anti-ban (profil konservatif). Feed event health monitor
+  // di connection.update agar auto-pause bisa aktif saat risiko tinggi.
+  const antibanCfg = {
+    rateLimiter: {
+      maxPerMinute: 5, maxPerHour: 60, maxPerDay: 400,
+      minDelayMs: 3000, maxDelayMs: 10000, newChatDelayMs: 8000,
+      maxIdenticalMessages: 3, burstAllowance: 2,
+    },
+    warmUp: {
+      warmUpDays: 7, day1Limit: 20, growthFactor: 1.8,
+      inactivityThresholdHours: 72,
+    },
+    health: {
+      autoPauseAt: "high",
+      onRiskChange: (st) => {
+        io.to(`user:${userId}`).emit("log", `Ban-risk: ${st.risk} (skor ${st.score})`);
+      },
+    },
+    logging: true,
+  };
+
+  const sock = wrapSocket(
+    makeWASocket({
+      printQRInTerminal: false,
+      auth: state,
+      logger: pino({ level: "silent" }),
+      version,
+      browser: Browsers.macOS("Safari"),   // fingerprint wajar & konsisten
+      markOnlineOnConnect: false,           // jangan tampil "online" seketika
+      syncFullHistory: false,
+      shouldIgnoreJid: jid => isJidBroadcast(jid),
+    }),
+    antibanCfg,
+    loadWarmUpState(userId),                 // lanjutkan progres warm-up bila ada
+  );
 
   sessions.set(userId, { sock, qr: null });
   // store.bind(sock.ev);
@@ -111,10 +177,26 @@ async function startSession(userId, io) {
       s.qr = null;
       io.to(`user:${userId}`).emit("qrstatus", "./assets/check.svg");
       io.to(`user:${userId}`).emit("log", "WhatsApp terhubung!");
+
+      // Beri tahu health monitor koneksi pulih, simpan warm-up, & aktifkan
+      // autosave berkala (5 menit) agar progres tidak hilang saat crash.
+      try { s.sock.antiban?.onReconnect(); } catch (_) { }
+      saveWarmUpState(userId);
+      if (!s.saveTimer) {
+        s.saveTimer = setInterval(() => saveWarmUpState(userId), 5 * 60 * 1000);
+        if (s.saveTimer.unref) s.saveTimer.unref();
+      }
     }
 
     if (connection === "close") {
       const reason = new Boom(lastDisconnect?.error).output.statusCode;
+
+      // Umpankan disconnect ke health monitor (sumber skor risiko utama),
+      // hentikan autosave, dan persist warm-up sebelum session dihapus.
+      try { s.sock.antiban?.onDisconnect(reason); } catch (_) { }
+      stopWarmUpAutosave(userId);
+      saveWarmUpState(userId);
+
       if (
         reason === DisconnectReason.connectionClosed ||
         reason === DisconnectReason.connectionLost ||
@@ -141,6 +223,8 @@ async function startSession(userId, io) {
 async function logoutSession(userId) {
   userId = String(userId);
   const s = getSession(userId);
+
+  stopWarmUpAutosave(userId);
 
   if (s?.sock) {
     try { await s.sock.logout(); } catch (e) {

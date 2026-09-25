@@ -12,7 +12,17 @@ const { Boom } = require("@hapi/boom");
 const qrcode = require("qrcode");
 const fs = require("fs");
 const path = require("path");
-const { wrapSocket } = require('baileys-antiban');
+// baileys-antiban@1.1.0 adalah ESM-only: field `exports` hanya punya kondisi
+// "import", tanpa "require"/"default". Jadi `require('baileys-antiban')` selalu
+// gagal (ERR_PACKAGE_PATH_NOT_EXPORTED) di Node versi mana pun. Muat lewat
+// dynamic import() (di-cache sekali) lalu di-await di startSession.
+let wrapSocketPromise;
+function loadWrapSocket() {
+  if (!wrapSocketPromise) {
+    wrapSocketPromise = import("baileys-antiban").then((m) => m.wrapSocket);
+  }
+  return wrapSocketPromise;
+}
 const { pool } = require("../db");
 
 // const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
@@ -106,6 +116,7 @@ async function startSession(userId, io) {
     logging: true,
   };
 
+  const wrapSocket = await loadWrapSocket();
   const sock = wrapSocket(
     makeWASocket({
       printQRInTerminal: false,

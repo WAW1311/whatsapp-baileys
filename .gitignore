@@ -2,3 +2,6 @@ node_modules/
 pat.txt
 
 .env
+
+CLAUDE.md
+Design-ui.md

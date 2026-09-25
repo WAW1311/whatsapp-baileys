@@ -31,7 +31,12 @@ export function AuthProvider({ children }) {
     return res.data.response
   }
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await api.post('/api/auth/logout', {})
+    } catch {
+      // Abaikan error server — sesi lokal tetap dibersihkan.
+    }
     localStorage.removeItem('wa_token')
     localStorage.removeItem('wa_user')
     setToken(null)

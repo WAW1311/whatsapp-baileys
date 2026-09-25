@@ -19,6 +19,7 @@ async function initDb() {
       email VARCHAR(150) NOT NULL UNIQUE,
       password_hash VARCHAR(255) NOT NULL,
       is_makeBot TINYINT(1) NOT NULL DEFAULT 0,
+      token_version INT UNSIGNED NOT NULL DEFAULT 0,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -27,6 +28,11 @@ async function initDb() {
   // Add is_makeBot column to existing tables that may not have it yet
   await pool.query(`
     ALTER TABLE users ADD COLUMN IF NOT EXISTS is_makeBot TINYINT(1) NOT NULL DEFAULT 0;
+  `).catch(() => {});
+
+  // token_version: dinaikkan saat logout untuk membatalkan semua JWT lama milik user.
+  await pool.query(`
+    ALTER TABLE users ADD COLUMN IF NOT EXISTS token_version INT UNSIGNED NOT NULL DEFAULT 0;
   `).catch(() => {});
 
   await pool.query(`

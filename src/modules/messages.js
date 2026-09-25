@@ -17,8 +17,22 @@ function isGroupJid(id) {
 
 async function safeUnlink(filePath) {
   try {
-    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+    if (filePath && fs.existsSync(filePath)) fs.unlinkSync(filePath);
   } catch (_) {}
+}
+
+const UPLOAD_DIR = path.resolve(process.cwd(), "uploads");
+
+// Bangun path upload yang aman: buang komponen direktori dari nama asli (anti
+// path traversal seperti "../../index.js") dan pastikan hasil tetap di UPLOAD_DIR.
+function buildSafeUploadPath(originalName) {
+  const base = path.basename(String(originalName || "file"));
+  const safe = base.replace(/[^\w.\-]/g, "_") || "file";
+  const filePath = path.join(UPLOAD_DIR, `${Date.now()}_${safe}`);
+  if (filePath !== UPLOAD_DIR && !filePath.startsWith(UPLOAD_DIR + path.sep)) {
+    throw new Error("Invalid upload path");
+  }
+  return filePath;
 }
 
 function initMessageRoutes(app) {
@@ -59,7 +73,8 @@ function initMessageRoutes(app) {
         }
       });
     } catch (e) {
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("groups error:", e);
+      return res.status(500).json({ status: false, response: "Gagal mengambil daftar grup." });
     }
   });
 
@@ -67,6 +82,7 @@ function initMessageRoutes(app) {
   // SEND PERSONAL MESSAGE
   // =========================
   r.post("/send-message", auth, async (req, res) => {
+    let filePath = null;
     try {
       const userId = String(req.user.id);
       const sess = getSession(userId);
@@ -90,8 +106,7 @@ function initMessageRoutes(app) {
       }
 
       const file = req.files.file_dikirim;
-      const filename = `${Date.now()}_${file.name}`;
-      const filePath = `./uploads/${filename}`;
+      filePath = buildSafeUploadPath(file.name);
       await file.mv(filePath);
 
       const ext = path.extname(filePath).toLowerCase();
@@ -112,7 +127,9 @@ function initMessageRoutes(app) {
       await safeUnlink(filePath);
       return res.json({ status: true, response: result });
     } catch (e) {
-      return res.status(500).json({ status: false, response: e.message || e });
+      await safeUnlink(filePath);
+      console.error("send-message error:", e);
+      return res.status(500).json({ status: false, response: "Gagal mengirim pesan." });
     }
   });
 
@@ -163,8 +180,7 @@ function initMessageRoutes(app) {
       }
 
       const file = req.files.file_dikirim;
-      const filename = `${Date.now()}_${file.name}`;
-      filePath = `./uploads/${filename}`;
+      filePath = buildSafeUploadPath(file.name);
       await file.mv(filePath);
 
       const ext = path.extname(filePath).toLowerCase();
@@ -193,7 +209,8 @@ function initMessageRoutes(app) {
       return res.json({ status: true, response: result });
     } catch (e) {
       if (filePath) await safeUnlink(filePath);
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("send-group-message error:", e);
+      return res.status(500).json({ status: false, response: "Gagal mengirim pesan grup." });
     }
   });
 

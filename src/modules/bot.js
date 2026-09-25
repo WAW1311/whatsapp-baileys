@@ -22,7 +22,8 @@ function initBotRoutes(app) {
         response: { is_makeBot: !!user.is_makeBot, commands },
       });
     } catch (e) {
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("bot route error:", e);
+      return res.status(500).json({ status: false, response: "Terjadi kesalahan server." });
     }
   });
 
@@ -41,7 +42,8 @@ function initBotRoutes(app) {
 
       return res.json({ status: true, response: { is_makeBot: !!newVal } });
     } catch (e) {
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("bot route error:", e);
+      return res.status(500).json({ status: false, response: "Terjadi kesalahan server." });
     }
   });
 
@@ -79,7 +81,8 @@ function initBotRoutes(app) {
       if (e.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ status: false, response: "Command already exists" });
       }
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("bot route error:", e);
+      return res.status(500).json({ status: false, response: "Terjadi kesalahan server." });
     }
   });
 
@@ -118,7 +121,8 @@ function initBotRoutes(app) {
       if (e.code === "ER_DUP_ENTRY") {
         return res.status(409).json({ status: false, response: "Command already exists" });
       }
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("bot route error:", e);
+      return res.status(500).json({ status: false, response: "Terjadi kesalahan server." });
     }
   });
 
@@ -139,7 +143,8 @@ function initBotRoutes(app) {
 
       return res.json({ status: true, response: { message: "Command deleted" } });
     } catch (e) {
-      return res.status(500).json({ status: false, response: e.message || e });
+      console.error("bot route error:", e);
+      return res.status(500).json({ status: false, response: "Terjadi kesalahan server." });
     }
   });
 }

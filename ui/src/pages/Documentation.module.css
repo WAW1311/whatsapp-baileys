@@ -1,6 +1,8 @@
-.formatCard {
-  margin-bottom: 1.25rem;
-}
+/* ============================================================
+   Documentation — Neo-brutalism
+   Class names preserved so JSX stays untouched.
+   ============================================================ */
+.formatCard { margin-bottom: 1.25rem; }
 
 .formatGrid {
   display: grid;
@@ -9,42 +11,40 @@
 }
 
 @media (max-width: 600px) {
-  .formatGrid {
-    grid-template-columns: 1fr;
-  }
+  .formatGrid { grid-template-columns: 1fr; }
 }
 
-.authNote {
-  margin-bottom: 1.25rem;
-}
+.authNote { margin-bottom: 1.25rem; }
 
 .sectionTitle {
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
   margin-bottom: 0.75rem;
-  color: #374151;
 }
 
-.section {
-  margin-bottom: 1.5rem;
-}
+.section { margin-bottom: 2rem; }
 
 .sectionHeading {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #7c3aed;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 2px solid #ede9fe;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 1rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--color-neo-yellow);
+  border: 3px solid var(--color-neo-ink);
+  box-shadow: var(--shadow-neo-xs);
 }
 
 /* Endpoint Card */
 .endpointCard {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  background: var(--color-neo-white);
+  border: 3px solid var(--color-neo-ink);
+  box-shadow: var(--shadow-neo-sm);
   padding: 1.25rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 1rem;
 }
 
 .endpointHeader {
@@ -52,207 +52,146 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .method {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.2rem 0.55rem;
-  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border: 2px solid var(--color-neo-ink);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #fff;
+  color: var(--color-neo-ink);
+  background: var(--color-neo-white);
 }
 
-.methodGet { background: #10b981; }
-.methodPost { background: #3b82f6; }
-.methodPut { background: #f59e0b; }
-.methodDelete { background: #ef4444; }
+.methodGet { background: #6EE7B7; }
+.methodPost { background: var(--color-neo-yellow); }
+.methodPut { background: var(--color-neo-violet); }
+.methodDelete { background: var(--color-neo-red); }
 
 .endpointTitle {
-  font-weight: 600;
-  color: #1f2937;
+  font-weight: 800;
   font-size: 0.95rem;
 }
 
 .url {
   font-size: 0.82rem;
-  background: #f3f4f6;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  color: #6d28d9;
+  background: var(--color-neo-cream);
+  padding: 0.2rem 0.5rem;
+  border: 2px solid var(--color-neo-ink);
+  color: var(--color-neo-ink);
   font-family: monospace;
+  font-weight: 700;
 }
 
 .authBadge {
-  font-size: 0.75rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 12px;
-  font-weight: 500;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border: 2px solid var(--color-neo-ink);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-.authRequired {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.authNone {
-  background: #d1fae5;
-  color: #065f46;
-}
+.authRequired { background: var(--color-neo-yellow); color: var(--color-neo-ink); }
+.authNone { background: #6EE7B7; color: var(--color-neo-ink); }
 
 .meta {
   font-size: 0.85rem;
-  color: #6b7280;
   margin-bottom: 0.4rem;
   display: flex;
   gap: 0.4rem;
   flex-wrap: wrap;
   align-items: baseline;
+  font-weight: 600;
 }
 
 .metaLabel {
-  font-weight: 600;
-  color: #374151;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.75rem;
 }
 
 /* Code Blocks */
 .codeBlock {
-  background: #1f2937;
-  color: #e5e7eb;
-  border-radius: 6px;
-  padding: 0.75rem 1rem;
-  margin-top: 0.5rem;
+  background: var(--color-neo-ink);
+  color: #f4f4f4;
+  border: 3px solid var(--color-neo-ink);
+  padding: 0.85rem 1rem;
+  margin-top: 0.6rem;
   font-size: 0.8rem;
   overflow-x: auto;
 }
 
-.codeBlock pre {
-  margin: 0;
-}
+.codeBlock pre { margin: 0; }
 
 .codeBlock code {
   font-family: 'Fira Code', 'Cascadia Code', monospace;
   white-space: pre;
 }
 
-.codeSuccess {
-  border-left: 3px solid #10b981;
-}
-
-.codeError {
-  border-left: 3px solid #ef4444;
-}
+.codeSuccess { border-left: 8px solid #6EE7B7; }
+.codeError { border-left: 8px solid var(--color-neo-red); }
 
 .codeLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #9ca3af;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #f4f4f4;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.45rem;
 }
 
 .bodyNote {
-  font-weight: 400;
+  font-weight: 500;
   text-transform: none;
   font-size: 0.72rem;
-  color: #6b7280;
+  color: #d1d5db;
   margin-left: 0.35rem;
 }
 
 /* Errors & Notes */
 .errors,
 .notes {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
+  margin-top: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: 3px solid var(--color-neo-ink);
+  box-shadow: var(--shadow-neo-xs);
 }
+
+.errors { background: #FFE0E0; }
+.notes { background: var(--color-neo-cream); }
+
+.errors .codeLabel,
+.notes .codeLabel { color: var(--color-neo-ink); }
 
 .errors ul,
 .notes ul {
+  margin: 0;
   padding-left: 1.2rem;
-  margin-top: 0.3rem;
-  color: #374151;
+  font-size: 0.86rem;
+  font-weight: 500;
   line-height: 1.7;
 }
 
-/* Socket section */
-.socketCard {
-  margin-bottom: 1.25rem;
-}
-
-.socketDesc {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-bottom: 0.75rem;
-}
-
-.socketGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
-@media (max-width: 600px) {
-  .socketGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.eventList {
-  list-style: none;
-  padding: 0;
-  margin-top: 0.5rem;
-  line-height: 1.9;
-  font-size: 0.88rem;
-  color: #374151;
-}
-
-.eventList code {
-  background: #f3f4f6;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  font-size: 0.82rem;
-  color: #6d28d9;
-}
-
-/* Flow */
-.flowCard {
-  margin-bottom: 1.25rem;
-}
-
-.flowList {
-  padding-left: 1.3rem;
-  line-height: 2;
-  font-size: 0.9rem;
-  color: #374151;
-}
-
-.flowList code {
-  background: #f3f4f6;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  color: #6d28d9;
-}
-
 /* Important */
-.importantCard {
-  margin-bottom: 2rem;
-}
+.importantCard { margin-bottom: 2rem; }
 
 .importantList {
   padding-left: 1.2rem;
   line-height: 1.9;
   font-size: 0.9rem;
-  color: #374151;
+  font-weight: 500;
 }
 
-.importantList code {
-  background: #f3f4f6;
+.importantList code,
+.url code {
+  background: var(--color-neo-violet);
   padding: 0.1rem 0.35rem;
-  border-radius: 4px;
+  border: 2px solid var(--color-neo-ink);
   font-size: 0.8rem;
-  color: #6d28d9;
+  color: var(--color-neo-ink);
 }

@@ -1,146 +1,144 @@
+/* ============================================================
+   Dashboard — Neo-brutalism
+   Class names preserved so JSX stays untouched.
+   ============================================================ */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1.25rem;
 }
 
-.userCard {
-  grid-column: 1;
-}
-
-.sessionCard {
-  grid-column: 2;
-  grid-row: 1 / 3;
-}
-
-.logCard {
-  grid-column: 1;
-}
-
-.tokenWrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.copyBtn {
-  border: 1px solid #d0d7de;
-  background: #fff;
-  color: #24292f;
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
-  line-height: 1;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.copyBtn:hover:not(:disabled) {
-  background: #f6f8fa;
-  border-color: #afb8c1;
-}
-
-.copyBtn:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.copyBtn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-@media (max-width: 900px) {
+@media (min-width: 900px) {
   .grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
-  .sessionCard,
-  .userCard,
-  .logCard {
-    grid-column: 1;
-    grid-row: auto;
-  }
+  .userCard { grid-column: 1; }
+  .sessionCard { grid-column: 2; grid-row: 1 / 3; }
+  .logCard { grid-column: 1; }
 }
 
 .sectionTitle {
-  font-size: 1.05rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
   margin-bottom: 1rem;
-  color: #374151;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid var(--color-neo-ink);
 }
 
 .infoRow {
   display: flex;
   justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #f3f4f6;
-  font-size: 0.9rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  font-size: 0.92rem;
+  font-weight: 600;
 }
 
-.infoRow:last-child {
-  border-bottom: none;
-}
+.infoRow:last-child { border-bottom: none; }
 
 .infoLabel {
-  color: #6b7280;
-  font-weight: 500;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.75rem;
 }
 
-.mono {
+.mono { font-family: monospace; font-size: 0.82rem; }
+
+.tokenWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.token {
   font-family: monospace;
   font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border: 2px solid var(--color-neo-ink);
+  background: var(--color-neo-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 9rem;
 }
+
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 2px solid var(--color-neo-ink);
+  background: var(--color-neo-white);
+  color: var(--color-neo-ink);
+  padding: 0.35rem 0.6rem;
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-neo-xs);
+  transition: transform 0.1s linear, box-shadow 0.1s linear, background-color 0.1s linear;
+}
+
+.copyBtn:hover:not(:disabled) { background: var(--color-neo-yellow); }
+.copyBtn:active:not(:disabled) { transform: translate(2px, 2px); box-shadow: 0 0 0 0 #000; }
+.copyBtn:disabled { opacity: 0.55; cursor: not-allowed; }
 
 /* QR Area */
 .qrArea {
-  min-height: 200px;
+  min-height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 2px dashed #e5e7eb;
   padding: 1rem;
+  border: 3px dashed var(--color-neo-ink);
+  background: var(--color-neo-cream);
 }
 
-.qrBox {
-  text-align: center;
-}
+.qrBox { text-align: center; }
 
 .qrImg {
-  max-width: 200px;
-  width: 100%;
-  border-radius: 6px;
+  width: 220px;
+  max-width: 100%;
+  height: auto;
+  border: 3px solid var(--color-neo-ink);
+  box-shadow: var(--shadow-neo-sm);
+  background: #fff;
 }
 
 .qrHint {
-  font-size: 0.8rem;
-  color: #6b7280;
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
-.statusBox {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.statusImg {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-}
+.statusBox { text-align: center; }
+.statusImg { width: 80px; height: 80px; object-fit: contain; }
 
 .noSession {
   text-align: center;
-  color: #9ca3af;
+  font-weight: 600;
 }
 
 .noSessionIcon {
-  font-size: 3rem;
-  display: block;
-  margin-bottom: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto 0.75rem;
+  border: 3px solid var(--color-neo-ink);
+  background: var(--color-neo-violet);
+  box-shadow: var(--shadow-neo-xs);
 }
 
 .sessionActions {
@@ -151,23 +149,24 @@
 
 /* Logs */
 .logBox {
-  background: #1f2937;
-  color: #d1fae5;
-  border-radius: 6px;
-  padding: 0.75rem;
-  height: 180px;
+  background: var(--color-neo-ink);
+  color: #7CFFB2;
+  border: 3px solid var(--color-neo-ink);
+  padding: 0.85rem;
+  height: 190px;
   overflow-y: auto;
   font-family: monospace;
   font-size: 0.8rem;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .logLine {
-  padding: 0.1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding: 0.12rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  word-break: break-word;
 }
 
 .logEmpty {
-  color: #6b7280;
+  color: #9ca3af;
   font-style: italic;
 }

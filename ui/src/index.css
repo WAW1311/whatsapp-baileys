@@ -1,258 +1,272 @@
-/* Global styles */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+@import "tailwindcss";
+
+/* ============================================================
+   Neo-brutalism design system (from Design-ui.md)
+   Palette, hard shadows, fonts exposed as Tailwind theme tokens.
+   ============================================================ */
+@theme {
+  --color-neo-cream: #fffdf5;
+  --color-neo-ink: #000000;
+  --color-neo-red: #ff6b6b;
+  --color-neo-yellow: #ffd93d;
+  --color-neo-violet: #c4b5fd;
+  --color-neo-white: #ffffff;
+  --color-neo-accent: #ff6b6b;
+
+  /* Hard offset shadows — zero blur, 45deg, per design spec */
+  --shadow-neo-xs: 2px 2px 0 0 #000;
+  --shadow-neo-sm: 4px 4px 0 0 #000;
+  --shadow-neo: 8px 8px 0 0 #000;
+  --shadow-neo-lg: 12px 12px 0 0 #000;
+  --shadow-neo-xl: 16px 16px 0 0 #000;
+
+  --font-sans: "Space Grotesk", system-ui, sans-serif;
+  --font-display: "Archivo Black", "Space Grotesk", sans-serif;
+
+  --animate-spin-slow: spin-slow 10s linear infinite;
 }
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
-  background-color: #f8f9fa;
-  color: #1f2937;
-  min-height: 100vh;
-}
-
-/* Buttons */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  padding: 0.55rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s, opacity 0.2s;
-  text-decoration: none;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-primary {
-  background-color: #7c3aed;
-  color: #ffffff;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #6d28d9;
-}
-
-.btn-danger {
-  background-color: #ef4444;
-  color: #ffffff;
-}
-
-.btn-danger:hover:not(:disabled) {
-  background-color: #dc2626;
-}
-
-.btn-secondary {
-  background-color: #e5e7eb;
-  color: #374151;
-}
-
-.btn-secondary:hover:not(:disabled) {
-  background-color: #d1d5db;
-}
-
-.btn-sm {
-  padding: 0.35rem 0.8rem;
-  font-size: 0.85rem;
-}
-
-/* Card */
-.card {
-  background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
-  padding: 1.5rem;
-}
-
-/* Form elements */
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
-  margin-bottom: 1rem;
-}
-
-.form-group label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-}
-
-.form-control {
-  padding: 0.55rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  color: #1f2937;
-  background: #fff;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  width: 100%;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
-}
-
-/* Alert */
-.alert {
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
-}
-
-.alert-success {
-  background-color: #d1fae5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-}
-
-.alert-error {
-  background-color: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
-}
-
-/* Layout */
-.page-layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
-}
-
-/* Page title */
-.page-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #111827;
-}
-
-/* Badge */
-.badge {
-  display: inline-block;
-  padding: 0.2rem 0.55rem;
-  border-radius: 9999px;
-  font-size: 0.78rem;
-  font-weight: 600;
-}
-
-.badge-success {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.badge-warning {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.badge-danger {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-/* Spinner */
-.spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255,255,255,0.4);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: inline-block;
-}
-
-.spinner-dark {
-  border-color: rgba(124,58,237,0.3);
-  border-top-color: #7c3aed;
-}
-
-@keyframes spin {
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* Toast container */
-.toast-container {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-width: 320px;
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-neo-cream);
+    color: var(--color-neo-ink);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    /* faint grid texture — never a flat background (design identity) */
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+  }
+
+  /* Visible keyboard focus everywhere (R-32) */
+  :focus-visible {
+    outline: 3px solid var(--color-neo-ink);
+    outline-offset: 2px;
+  }
+
+  /* Respect reduced-motion (design spec + a11y) */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
 }
 
-.toast {
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  animation: slideIn 0.25s ease;
+@layer components {
+  /* ---- Buttons: mechanical push-down, hard shadow ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.7rem 1.15rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--color-neo-ink);
+    background: var(--color-neo-white);
+    border: 3px solid var(--color-neo-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-neo-sm);
+    cursor: pointer;
+    transition: transform 0.1s linear, box-shadow 0.1s linear, background-color 0.1s linear;
+  }
+  .btn:hover { background: var(--color-neo-yellow); }
+  .btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 0 #000; }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: var(--shadow-neo-sm); }
+
+  .btn-primary { background: var(--color-neo-red); }
+  .btn-primary:hover { background: var(--color-neo-yellow); }
+  .btn-danger { background: var(--color-neo-ink); color: var(--color-neo-white); }
+  .btn-danger:hover { background: var(--color-neo-red); color: var(--color-neo-ink); }
+  .btn-secondary { background: var(--color-neo-violet); }
+  .btn-secondary:hover { background: var(--color-neo-yellow); }
+
+  .btn-sm {
+    min-height: 38px;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.78rem;
+    box-shadow: var(--shadow-neo-xs);
+  }
+  .btn-sm:active { transform: translate(2px, 2px); }
+
+  /* ---- Card: bordered block with hard shadow ---- */
+  .card {
+    background: var(--color-neo-white);
+    border: 3px solid var(--color-neo-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-neo);
+    padding: 1.5rem;
+  }
+
+  /* ---- Forms ---- */
+  .form-group { margin-bottom: 1.1rem; }
+  .form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 700;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .form-control {
+    width: 100%;
+    padding: 0.7rem 0.85rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-neo-ink);
+    background: var(--color-neo-white);
+    border: 3px solid var(--color-neo-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-neo-xs);
+    transition: background-color 0.1s linear, box-shadow 0.1s linear;
+  }
+  .form-control::placeholder { color: #5b5b5b; }
+  .form-control:focus {
+    outline: none;
+    background: var(--color-neo-yellow);
+    box-shadow: var(--shadow-neo-sm);
+  }
+  .form-control:focus::placeholder { color: #000; }
+
+  /* ---- Alerts ---- */
+  .alert {
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    border: 3px solid var(--color-neo-ink);
+    border-radius: 0;
+    box-shadow: var(--shadow-neo-xs);
+  }
+  .alert-error { background: var(--color-neo-red); color: var(--color-neo-ink); }
+  .alert-success { background: var(--color-neo-yellow); color: var(--color-neo-ink); }
+
+  /* ---- Badge (pill sticker) ---- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-neo-violet);
+    color: var(--color-neo-ink);
+    border: 2px solid var(--color-neo-ink);
+    border-radius: 999px;
+  }
+
+  /* ---- Spinner (square, mechanical) ---- */
+  .spinner {
+    display: inline-block;
+    width: 1.05rem;
+    height: 1.05rem;
+    border: 3px solid var(--color-neo-ink);
+    border-top-color: transparent;
+    animation: spin-slow 0.7s linear infinite;
+  }
+  /* Alias kept for pages that request an explicit dark spinner (already ink) */
+  .spinner-dark { border-color: var(--color-neo-ink); border-top-color: transparent; }
+
+  /* ---- Table wrapper: horizontal scroll on narrow viewports ---- */
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 3px solid var(--color-neo-ink);
+    box-shadow: var(--shadow-neo-xs);
+  }
+  .table-wrapper table { border-collapse: collapse; min-width: 34rem; }
+
+  /* ---- Toasts ---- */
+  .toast-container {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    z-index: 60;
+    max-width: min(92vw, 340px);
+  }
+  .toast {
+    padding: 0.75rem 1rem;
+    font-weight: 700;
+    background: var(--color-neo-white);
+    border: 3px solid var(--color-neo-ink);
+    box-shadow: var(--shadow-neo-sm);
+  }
+  .toast-success { background: var(--color-neo-yellow); }
+  .toast-error { background: var(--color-neo-red); }
+
+  /* ---- Tables ---- */
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td {
+    padding: 0.75rem 0.9rem;
+    text-align: left;
+    border-bottom: 2px solid var(--color-neo-ink);
+    white-space: nowrap;
+  }
+  th {
+    background: var(--color-neo-ink);
+    color: var(--color-neo-white);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+  }
+  tbody tr:hover td { background: var(--color-neo-yellow); }
+
+  /* ---- Shared layout bits ---- */
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 5vw, 2.9rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .main-content {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+  }
 }
 
-.toast-success {
-  background: #059669;
-  color: #fff;
+/* ============================================================
+   Utilities: texture backgrounds + sticker helpers (identity)
+   ============================================================ */
+@utility bg-neo-dots {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.16) 1.5px, transparent 1.6px);
+  background-size: 18px 18px;
+}
+@utility bg-neo-grid {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.09) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.09) 2px, transparent 2px);
+  background-size: 32px 32px;
 }
 
-.toast-error {
-  background: #dc2626;
-  color: #fff;
-}
-
-@keyframes slideIn {
-  from { transform: translateX(110%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* Table */
-.table-wrapper {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-
-th, td {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-th {
-  background: #f3f4f6;
-  font-weight: 600;
-  color: #374151;
-}
-
-tr:hover td {
-  background: #fafafa;
-}

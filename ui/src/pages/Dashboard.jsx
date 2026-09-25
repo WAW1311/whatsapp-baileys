@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import { useAuth } from '../context/AuthContext'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faUser, faMobileScreen, faClipboardList, faMobileScreenButton,
-  faCopy, faPlay, faRightFromBracket
-} from '@fortawesome/free-solid-svg-icons'
+import { User, Smartphone, ClipboardList, Copy, Play, LogOut } from 'lucide-react'
 import api from '../api'
 import styles from './Dashboard.module.css'
 
@@ -49,7 +45,8 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return
 
-    const socket = io('https://waw1311.cloud', { auth: { token }, transports: ['websocket', 'polling'] })
+    // Sumber tunggal dari root .env. Kosong/undefined = same-origin → lewat proxy Vite (/socket.io) saat dev.
+    const socket = io(import.meta.env.VITE_API_BASE_URL || undefined, { auth: { token }, transports: ['websocket', 'polling'] })
     socketRef.current = socket
 
     socket.on('connect', () => {
@@ -122,7 +119,7 @@ export default function Dashboard() {
 
       <div className={styles.grid}>
         <div className={`card ${styles.userCard}`}>
-          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faUser} /> Account</h2>
+          <h2 className={styles.sectionTitle}><User strokeWidth={3} className="h-5 w-5" /> Account</h2>
           <div className={styles.infoRow}>
             <span className={styles.infoLabel}>Name</span>
             <span>{user?.name || '—'}</span>
@@ -147,14 +144,14 @@ export default function Dashboard() {
                 aria-label="Copy API Key"
                 title="Copy API Key"
               >
-                <FontAwesomeIcon icon={faCopy} /> Copy
+                <Copy strokeWidth={3} className="h-4 w-4" /> Copy
               </button>
             </div>
           </div>
         </div>
 
         <div className={`card ${styles.sessionCard}`}>
-          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faMobileScreen} /> WhatsApp Session</h2>
+          <h2 className={styles.sectionTitle}><Smartphone strokeWidth={3} className="h-5 w-5" /> WhatsApp Session</h2>
 
           <div className={styles.qrArea}>
             {qrImage ? (
@@ -168,7 +165,7 @@ export default function Dashboard() {
               </div>
             ) : (
               <div className={styles.noSession}>
-                <span className={styles.noSessionIcon}><FontAwesomeIcon icon={faMobileScreenButton} /></span>
+                <span className={styles.noSessionIcon}><Smartphone strokeWidth={3} className="h-7 w-7" /></span>
                 <p>No active session. Start one to get a QR code.</p>
               </div>
             )}
@@ -176,16 +173,16 @@ export default function Dashboard() {
 
           <div className={styles.sessionActions}>
             <button className="btn btn-primary" onClick={startSession} disabled={sessionLoading}>
-              {sessionLoading ? <span className="spinner" /> : <><FontAwesomeIcon icon={faPlay} /> Start Session</>}
+              {sessionLoading ? <span className="spinner" /> : <><Play strokeWidth={3} className="h-4 w-4" /> Start Session</>}
             </button>
             <button className="btn btn-danger" onClick={logoutSession} disabled={logoutLoading}>
-              {logoutLoading ? <span className="spinner" /> : <><FontAwesomeIcon icon={faRightFromBracket} /> Logout Session</>}
+              {logoutLoading ? <span className="spinner" /> : <><LogOut strokeWidth={3} className="h-4 w-4" /> Logout Session</>}
             </button>
           </div>
         </div>
 
         <div className={`card ${styles.logCard}`}>
-          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faClipboardList} /> Realtime Logs</h2>
+          <h2 className={styles.sectionTitle}><ClipboardList strokeWidth={3} className="h-5 w-5" /> Realtime Logs</h2>
           <div className={styles.logBox}>
             {logs.length === 0 ? (
               <span className={styles.logEmpty}>No logs yet…</span>

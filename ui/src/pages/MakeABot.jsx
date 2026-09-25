@@ -1,9 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faRobot, faCircleCheck, faBan, faPenToSquare, faPlus,
-  faTrash, faClipboardList
-} from '@fortawesome/free-solid-svg-icons'
+import { Bot, CircleCheck, Ban, Pencil, Plus, Trash2, ClipboardList } from 'lucide-react'
 import api from '../api'
 import styles from './MakeABot.module.css'
 
@@ -136,7 +132,7 @@ export default function MakeABot() {
         ))}
       </div>
 
-      <h1 className="page-title"><FontAwesomeIcon icon={faRobot} /> Make a Bot</h1>
+      <h1 className="page-title"><Bot strokeWidth={3} className="inline h-8 w-8" /> Make a Bot</h1>
 
       <div className={styles.grid}>
         {/* Toggle card */}
@@ -149,8 +145,8 @@ export default function MakeABot() {
           <div className={styles.toggleRow}>
             <span className={styles.toggleLabel}>
               {isMakeBot
-                ? <><FontAwesomeIcon icon={faCircleCheck} /> Bot Aktif</>
-                : <><FontAwesomeIcon icon={faBan} /> Bot Tidak Aktif</>
+                ? <><CircleCheck strokeWidth={3} className="h-4 w-4" /> Bot Aktif</>
+                : <><Ban strokeWidth={3} className="h-4 w-4" /> Bot Tidak Aktif</>
               }
             </span>
             <button
@@ -167,8 +163,8 @@ export default function MakeABot() {
         <div className={`card ${styles.formCard}`}>
           <h2 className={styles.sectionTitle}>
             {editingId !== null
-              ? <><FontAwesomeIcon icon={faPenToSquare} /> Edit Perintah</>
-              : <><FontAwesomeIcon icon={faPlus} /> Tambah Perintah</>
+              ? <><Pencil strokeWidth={3} className="h-5 w-5" /> Edit Perintah</>
+              : <><Plus strokeWidth={3} className="h-5 w-5" /> Tambah Perintah</>
             }
           </h2>
           <form onSubmit={handleSubmit} className={styles.form}>
@@ -209,7 +205,7 @@ export default function MakeABot() {
 
         {/* Commands table card */}
         <div className={`card ${styles.tableCard}`}>
-          <h2 className={styles.sectionTitle}><FontAwesomeIcon icon={faClipboardList} /> Daftar Perintah ({commands.length})</h2>
+          <h2 className={styles.sectionTitle}><ClipboardList strokeWidth={3} className="h-5 w-5" /> Daftar Perintah ({commands.length})</h2>
           {commands.length === 0 ? (
             <p className={styles.empty}>Belum ada perintah. Tambahkan di atas.</p>
           ) : (
@@ -236,14 +232,14 @@ export default function MakeABot() {
                             onClick={() => startEdit(cmd)}
                             disabled={deletingId === cmd.id}
                           >
-                            <FontAwesomeIcon icon={faPenToSquare} /> Edit
+                            <Pencil strokeWidth={3} className="h-4 w-4" /> Edit
                           </button>
                           <button
                             className="btn btn-danger btn-sm"
                             onClick={() => handleDelete(cmd.id)}
                             disabled={deletingId === cmd.id}
                           >
-                            {deletingId === cmd.id ? <span className="spinner" /> : <><FontAwesomeIcon icon={faTrash} /> Hapus</>}
+                            {deletingId === cmd.id ? <span className="spinner" /> : <><Trash2 strokeWidth={3} className="h-4 w-4" /> Hapus</>}
                           </button>
                         </div>
                       </td>
